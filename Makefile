@@ -2,7 +2,7 @@ TARGET		:= webserv
 CXX			:= g++
 CXXFLAGS	:= -pedantic-errors -Wall -Wextra -Werror -std=c++98 -pedantic -g -D_GLIBCXX_DEBUG -fdiagnostics-color=always
 LDFLAGS		:= -L/usr/lib -lstdc++ -lm
-OBJ_DIR		:= ./objects/webserv
+OBJ_DIR		:= ./objects
 APP_DIR		:= ./
 INC_DIRS	:= $(shell find ./include -type d)
 INCLUDE		:= $(addprefix -I,$(INC_DIRS))
@@ -11,7 +11,7 @@ SRC			:= $(wildcard srcs/*.cpp)
 OBJECTS		:= $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 DEPENDENCIES := $(OBJECTS:.o=.d)
 
-.PHONY: all build clean fclean debug release info re
+.PHONY: all build clean fclean debug release re test
 
 all: build $(APP_DIR)/$(TARGET)
 
@@ -24,6 +24,8 @@ $(APP_DIR)/$(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(APP_DIR)/$(TARGET) $^ $(LDFLAGS)
 
 -include $(DEPENDENCIES)
+
+webser: all
 
 build:
 	@mkdir -p $(APP_DIR)
@@ -42,3 +44,6 @@ fclean: clean
 	rm -rf $(TARGET)
 
 re: clean all
+
+test: all
+	./$(TARGET) "hello there"
