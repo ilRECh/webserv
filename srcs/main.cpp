@@ -4,7 +4,14 @@ int main(int argc, char **argv)
 {
     if (argc == 2)
     {
-        OUT("%s\n", argv[1]);
+        try {
+            Server webserv(argv[1]);
+            webserv.run();
+        } catch (const char * e) {
+            OUT("Catched: %s\n", e);
+        } catch (...) {
+            OUT("Couldn't catch\n");
+        }
         return 0;
     }
     else

@@ -1,11 +1,17 @@
 #pragma once
 
 // Outputs
+#include <iostream>
 #include <stdio.h>
+#include <errno.h>
 
 // STL
 #include <cstring>
 #include <string>
+#include <sstream>
+#include <list>
+#include <exception>
+#include <cstdlib>
 
 // networking
 #include <sys/types.h>
@@ -20,5 +26,21 @@
 
 // OUTPUT
 namespace ft {
-#define OUT printf("<%d><%s><%s>", __LINE__, __FILE__, __func__); printf 
+#define OUT printf("<%d><%s><%s>", __LINE__, __FILE__, __func__); printf
+#define CHECK_ASSERT(COND, TROWING) \
+{                       \
+    if (COND)        \
+    {                   \
+        throw (TROWING);\
+    }                   \
 }
+
+template <typename T>
+std::string str(T arg)
+{
+    std::stringstream ss;
+    ss << arg;
+    return ss.str();
+}
+
+} // ft

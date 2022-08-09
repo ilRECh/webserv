@@ -46,4 +46,4 @@ fclean: clean
 re: clean all
 
 test: all
-	./$(TARGET) "hello there"
+	./$(TARGET) "8888"
