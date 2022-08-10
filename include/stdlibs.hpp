@@ -27,13 +27,6 @@
 // OUTPUT
 namespace ft {
 #define OUT printf("<%d><%s><%s>", __LINE__, __FILE__, __func__); printf
-#define CHECK_ASSERT(COND, TROWING) \
-{                       \
-    if (COND)        \
-    {                   \
-        throw (TROWING);\
-    }                   \
-}
 
 template <typename T>
 std::string str(T arg)
