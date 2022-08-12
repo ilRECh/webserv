@@ -12,6 +12,7 @@
 #include <list>
 #include <exception>
 #include <cstdlib>
+#include <ios>
 
 // networking
 #include <sys/types.h>
@@ -24,9 +25,17 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+// recv
+#include <sys/types.h>
+#include <sys/socket.h>
+
+// inet_ntoa
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 // OUTPUT
 namespace ft {
-#define OUT printf("<%d><%s><%s>", __LINE__, __FILE__, __func__); printf
 
 template <typename T>
 std::string str(T arg)
@@ -35,5 +44,30 @@ std::string str(T arg)
     ss << arg;
     return ss.str();
 }
+
+#define OUT(OUTPUT)                        \
+(std::cout << std::boolalpha               \
+           << '<' << __LINE__ << "><"      \
+                  << __FILE__ << "><"      \
+                  << __func__ << ">\n--->" \
+                  << OUTPUT << std::endl)
+
+#define NL "\n    "
+
+#define ERR(ERROR_MSG)                       \
+(std::runtime_error(                  "<" +  \
+                        ft::str(__LINE__) +  \
+                                     "><" +  \
+                    std::string(__FILE__) +  \
+                                     "><" +  \
+                    std::string(__func__) +  \
+                                     "> "  +  \
+                                ERROR_MSG))
+
+#define in ,
+
+
+    for (std::list<int>::iterator iter = CONTAINER.begin(); iter != CONTAINER.end(); ++iter)
+
 
 } // ft

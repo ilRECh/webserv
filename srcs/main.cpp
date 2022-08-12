@@ -7,10 +7,10 @@ int main(int argc, char **argv)
         try {
             Server webserv(argv[1]);
             webserv.run();
-        } catch (const char * e) {
-            OUT("Catched: %s\n", e);
+        } catch (std::exception& e) {
+            OUT("Catched: " << e.what());
         } catch (...) {
-            OUT("Couldn't catch\n");
+            OUT("Couldn't catch");
         }
         return 0;
     }
