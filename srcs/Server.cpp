@@ -116,7 +116,7 @@ void Server::accept_incomers()
 
 void Server::scan_dead()
 {
-    std::recv()
+    // std::recv()
 
 }
 

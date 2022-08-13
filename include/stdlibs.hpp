@@ -9,10 +9,11 @@
 #include <cstring>
 #include <string>
 #include <sstream>
-#include <list>
 #include <exception>
 #include <cstdlib>
 #include <ios>
+#include <list>
+#include <map>
 
 // networking
 #include <sys/types.h>
@@ -61,13 +62,38 @@ std::string str(T arg)
                     std::string(__FILE__) +  \
                                      "><" +  \
                     std::string(__func__) +  \
-                                     "> "  +  \
+                                     "> " +  \
                                 ERROR_MSG))
 
-#define in ,
+template<typename T>
+T iterator(T iter, bool mode)
+{
+    static T current;
 
+    if (mode == true)
+    {
+        current = iter;
+        return current;
+    }
+    else
+    {
+        return current;
+    }
+}
 
-    for (std::list<int>::iterator iter = CONTAINER.begin(); iter != CONTAINER.end(); ++iter)
+// It's an iterator
+#define ELEM(CONTAINER) ft::iterator(CONTAINER.begin(), false)
+
+// hand made for_each. It is C++98, what did you expect?
+#define FOR_EACH(CONTAINER, LAMBDA)                                   \
+{                                                                     \
+    ft::iterator(CONTAINER.begin(), true);                            \
+    while (ft::iterator(CONTAINER.begin(), false) != CONTAINER.end()) \
+    {                                                                 \
+        LAMBDA;                                                       \
+        ft::iterator(++ft::iterator(CONTAINER.begin(), false), true); \
+    }                                                                 \
+}
 
 
 } // ft

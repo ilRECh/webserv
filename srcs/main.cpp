@@ -1,7 +1,13 @@
 #include "Server.hpp"
 
+// #define COMPILE_TEST
+
+
 int main(int argc, char **argv)
 {
+#ifdef COMPILE_TEST
+    return 0;
+#endif
     if (argc == 2)
     {
         try {
