@@ -116,8 +116,19 @@ void Server::accept_incomers()
 
 void Server::scan_dead()
 {
-    // std::recv()
+    std::list<int>::iterator iter = Accepted_fds.begin();
+    while (iter != Accepted_fds.end())
+    {
+        OUT(FD_ISSET(*iter, &Read_set));
 
+        if (FD_ISSET(*iter, &Read_set))
+        {
+            OUT("Okay");
+            OUT("Received: " << recv(Sock_fd, NULL, 0, MSG_PEEK));
+        }
+
+        ++iter;
+    }
 }
 
 void Server::receive()
