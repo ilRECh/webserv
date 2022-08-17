@@ -44,4 +44,4 @@ fclean: clean
 re: clean all
 
 test: debug
-	./tests.sh
+	./webserv 8888

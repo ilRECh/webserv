@@ -32,7 +32,9 @@ private:
     void scan_dead();
 
 public:
-    Server(std::string const port);
+    Server(std::string const name ,
+           std::string const ip   ,
+           std::string const port);
     ~Server();
     void run();
 };

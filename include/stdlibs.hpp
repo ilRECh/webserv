@@ -14,6 +14,7 @@
 #include <ios>
 #include <list>
 #include <map>
+#include <algorithm>
 
 // networking
 #include <sys/types.h>

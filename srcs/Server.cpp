@@ -1,9 +1,11 @@
 #include "Server.hpp"
 #include "Connection.hpp"
 
-Server::Server(std::string const port)
-    :   Name("ilRECh Server"),
-        Ip("127.0.0.1"),
+Server::Server(std::string const name ,
+               std::string const ip   ,
+               std::string const port)
+    :   Name(name),
+        Ip(ip),
         Port(port),
         Net_info(0),
         Sock_len(0),
@@ -23,9 +25,9 @@ Server::Server(std::string const port)
         throw ERR(gai_strerror(errno));
     }
 
-    if (1024 > std::atoi(Port.c_str()) || std::atoi(Port.c_str()) > 65535)
+    if (1 > std::atoi(Port.c_str()) || std::atoi(Port.c_str()) > 65535)
     {
-        throw ERR("port range [1025,65535]");
+        throw ERR("port range [1,65535]");
     }
 
     if ((Sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -171,7 +173,9 @@ void Server::receive()
             if (received > 0)
             {
                 conn->set_accepted_msg(accepted_buff);
+                OUT("Message received");
             }
+
         }
 
         ++conn;
@@ -188,6 +192,7 @@ void Server::prepare_reply()
         {
             conn->set_reply_msg("\nAccepted from Server: General Kenobi\n\n");
             conn->set_accepted_msg("");
+            OUT("Reply prepared");
         }
 
         ++conn;
@@ -203,10 +208,12 @@ void Server::reply()
         if (FD_ISSET(conn->fd, &Write_set))
         {
             FD_CLR(conn->fd, &Write_set);
+
             if (not conn->get_reply_msg().empty())
             {
                 send(conn->fd, conn->get_reply_msg().c_str(), conn->get_reply_msg().length(), 0);
                 conn->set_reply_msg("");
+                OUT("Reply sent");
             }
         }
 

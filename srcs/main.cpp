@@ -1,17 +1,11 @@
-#include "Server.hpp"
-
-// #define COMPILE_TEST
-
+#include "Dispatcher.hpp"
 
 int main(int argc, char **argv)
 {
-#ifdef COMPILE_TEST
-    return 0;
-#endif
     if (argc == 2)
     {
         try {
-            Server webserv(argv[1]);
+            Dispatcher webserv(argv[1]);
             webserv.run();
         } catch (std::exception& e) {
             OUT("Catched: " << e.what());

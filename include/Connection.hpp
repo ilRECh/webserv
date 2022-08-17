@@ -1,7 +1,7 @@
-#include "stdlibs.hpp"
+#pragma once
 
-// stl
-#include <algorithm>
+//local
+#include "stdlibs.hpp"
 
 class Connection
 {
