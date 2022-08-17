@@ -2,6 +2,8 @@
 
 #include "stdlibs.hpp"
 
+class Connection;
+
 class Server
 {
 private:
@@ -20,7 +22,7 @@ private:
     int                Sock_fd;
     int                Max_fd;
 
-    std::list<int>     Accepted_fds;
+    std::list<Connection> Accepted_conns;
 
     void scan_events();
     void accept_incomers();

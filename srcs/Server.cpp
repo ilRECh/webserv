@@ -1,10 +1,5 @@
 #include "Server.hpp"
-
-template <typename T, typename B>
-std::string operator+(T rigth, B left)
-{
-    return std::string(left) + std::string(rigth);
-}
+#include "Connection.hpp"
 
 Server::Server(std::string const port)
     :   Name("ilRECh Server"),
@@ -78,8 +73,9 @@ void Server::run()
         scan_events();
         accept_incomers();
         scan_dead();
-        // receive
-        // reply
+        receive();
+        // prepare_reply();
+        // reply();
     }
 }
 
@@ -101,8 +97,13 @@ void Server::accept_incomers()
     {
         int const incomer = accept(Sock_fd, Net_info->ai_addr, &Sock_len);
 
+        if (incomer > Max_fd)
+        {
+            Max_fd = incomer;
+        }
+
         fcntl(incomer, F_SETFD, O_NONBLOCK);
-        Accepted_fds.push_back(incomer);
+        Accepted_conns.push_back(Connection(incomer));
         FD_SET(incomer, &Fd_set);
     	sockaddr_in incomer_addr;
         socklen_t incomer_socklen = sizeof(incomer_addr);
@@ -116,24 +117,51 @@ void Server::accept_incomers()
 
 void Server::scan_dead()
 {
-    std::list<int>::iterator iter = Accepted_fds.begin();
-    while (iter != Accepted_fds.end())
-    {
-        OUT(FD_ISSET(*iter, &Read_set));
+    char dummy = 0;
+    std::list<Connection>::iterator conn = Accepted_conns.begin();
 
-        if (FD_ISSET(*iter, &Read_set))
+    while (conn != Accepted_conns.end())
+    {
+        if (FD_ISSET(conn->fd, &Read_set))
         {
-            OUT("Okay");
-            OUT("Received: " << recv(Sock_fd, NULL, 0, MSG_PEEK));
+            const int received = recv(conn->fd, &dummy, sizeof(dummy), MSG_PEEK);
+
+            if (received == 0)
+            {
+                FD_CLR(conn->fd, &Write_set);
+                FD_CLR(conn->fd, &Read_set);
+                FD_CLR(conn->fd, &Fd_set);
+                close(conn->fd);
+                OUT("Closed connection: " << conn->fd);
+                conn = Accepted_conns.erase(conn);
+            }
         }
 
-        ++iter;
+        ++conn;
     }
 }
 
 void Server::receive()
 {
+    char accepted_buff[1000] = {0};
+    std::list<Connection>::iterator conn = Accepted_conns.begin();
 
+    while (conn != Accepted_conns.end())
+    {
+        if (FD_ISSET(conn->fd, &Read_set))
+        {
+            FD_CLR(conn->fd, &Read_set);
+
+            const int received = recv(conn->fd, accepted_buff, sizeof(accepted_buff) - 1, 0);
+
+            if (received > 0)
+            {
+                conn->set_accepted_msg(accepted_buff);
+            }
+        }
+
+        ++conn;
+    }
 }
 
 void Server::reply()

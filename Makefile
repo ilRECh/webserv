@@ -1,6 +1,6 @@
 TARGET		:= webserv
 CXX			:= g++
-CXXFLAGS	:= -pedantic-errors -Wall -Wextra -Werror -std=c++98 -pedantic -g -D_GLIBCXX_DEBUG -fdiagnostics-color=always
+CXXFLAGS	:= -pedantic-errors -Wall -Wextra -Werror -std=c++98 -pedantic -fdiagnostics-color=always
 LDFLAGS		:= -L/usr/lib -lstdc++ -lm
 OBJ_DIR		:= ./objects
 APP_DIR		:= ./
@@ -25,7 +25,7 @@ $(APP_DIR)/$(TARGET): $(OBJECTS)
 
 -include $(DEPENDENCIES)
 
-webser: all
+webserv: all
 
 build:
 	@mkdir -p $(APP_DIR)
@@ -45,5 +45,5 @@ fclean: clean
 
 re: clean all
 
-test: all
-	./$(TARGET) "8888"
+test: debug
+	./tests.sh
