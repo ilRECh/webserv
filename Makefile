@@ -44,4 +44,4 @@ fclean: clean
 re: clean all
 
 test: debug
-	./webserv 8888
+	./webserv config/default.conf
