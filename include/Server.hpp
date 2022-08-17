@@ -27,6 +27,7 @@ private:
     void scan_events();
     void accept_incomers();
     void receive();
+    void prepare_reply();
     void reply();
     void scan_dead();
 

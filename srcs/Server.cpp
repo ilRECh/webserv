@@ -74,8 +74,8 @@ void Server::run()
         accept_incomers();
         scan_dead();
         receive();
-        // prepare_reply();
-        // reply();
+        prepare_reply();
+        reply();
     }
 }
 
@@ -132,7 +132,7 @@ void Server::scan_dead()
                 FD_CLR(conn->fd, &Read_set);
                 FD_CLR(conn->fd, &Fd_set);
                 close(conn->fd);
-                OUT("Closed connection: " << conn->fd);
+                OUT("Erased from all fd sets and closed connection: " << conn->fd);
                 conn = Accepted_conns.erase(conn);
             }
         }
@@ -164,7 +164,38 @@ void Server::receive()
     }
 }
 
+void Server::prepare_reply()
+{
+    std::list<Connection>::iterator conn = Accepted_conns.begin();
+
+    while (conn != Accepted_conns.end())
+    {
+        if (not conn->get_accepted_msg().empty())
+        {
+            conn->set_reply_msg("\nAccepted from Server: General Kenobi\n\n");
+            conn->set_accepted_msg("");
+        }
+
+        ++conn;
+    }
+}
+
 void Server::reply()
 {
+    std::list<Connection>::iterator conn = Accepted_conns.begin();
 
+    while (conn != Accepted_conns.end())
+    {
+        if (FD_ISSET(conn->fd, &Write_set))
+        {
+            FD_CLR(conn->fd, &Write_set);
+            if (not conn->get_reply_msg().empty())
+            {
+                send(conn->fd, conn->get_reply_msg().c_str(), conn->get_reply_msg().length(),0);
+                conn->set_reply_msg("");
+            }
+        }
+
+        ++conn;
+    }
 }
