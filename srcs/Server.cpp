@@ -57,13 +57,27 @@ Server::Server(std::string const port)
 
     Max_fd = Sock_fd;
 
+    FD_ZERO(&Write_set);
+    FD_ZERO(&Read_set);
     FD_ZERO(&Fd_set);
     FD_SET(Sock_fd, &Fd_set);
 }
 
 Server::~Server()
 {
+    std::list<Connection>::iterator conn = Accepted_conns.begin();
 
+    while (conn != Accepted_conns.end())
+    {
+        close(conn->fd);
+    }
+
+    FD_ZERO(&Write_set);
+    FD_ZERO(&Read_set);
+    FD_ZERO(&Fd_set);
+    freeaddrinfo(Net_info);
+    close(Sock_fd);
+    OUT("Free Net_info and close Sock_fd");
 }
 
 void Server::run()
@@ -191,7 +205,7 @@ void Server::reply()
             FD_CLR(conn->fd, &Write_set);
             if (not conn->get_reply_msg().empty())
             {
-                send(conn->fd, conn->get_reply_msg().c_str(), conn->get_reply_msg().length(),0);
+                send(conn->fd, conn->get_reply_msg().c_str(), conn->get_reply_msg().length(), 0);
                 conn->set_reply_msg("");
             }
         }
