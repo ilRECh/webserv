@@ -10,11 +10,13 @@ Config::Config(std::string const path_to_config_file)
 
     read_file();
 
+    
+
     Config_file.close();
 }
 
 void Config::read_file()
 {
-    
+
 }
 
