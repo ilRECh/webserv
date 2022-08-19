@@ -1,42 +1,10 @@
 #pragma once
 
-// Outputs
 #include <iostream>
-#include <stdio.h>
-#include <errno.h>
-
-// STL
-#include <cstring>
 #include <string>
-#include <sstream>
 #include <exception>
-#include <cstdlib>
-#include <ios>
-#include <list>
-#include <map>
-#include <algorithm>
+#include <sstream>
 
-// networking
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <fcntl.h>
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-// recv
-#include <sys/types.h>
-#include <sys/socket.h>
-
-// inet_ntoa
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-// OUTPUT
 namespace ft {
 
 template <typename T>

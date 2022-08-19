@@ -30,7 +30,7 @@ build:
 	@mkdir -p $(OBJ_DIR)
 
 debug: CXXFLAGS += -g
-debug: fclean all
+debug: all
 
 release: CXXFLAGS += -O2
 release: fclean all

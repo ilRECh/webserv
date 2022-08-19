@@ -25,6 +25,12 @@ Connection::Connection(const int _fd)
         fd(_fd)
 {}
 
+Connection::~Connection()
+{
+    close(fd);
+    OUT("Closed socket: " << fd);
+}
+
 void Connection::set_accepted_msg(char const * _accepted_msg)
 {
     log_out_with_symbols(_accepted_msg);

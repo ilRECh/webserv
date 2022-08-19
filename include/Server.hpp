@@ -1,6 +1,32 @@
 #pragma once
 
-#include "stdlibs.hpp"
+#include "logger.hpp"
+
+#include <errno.h>
+#include <cstring>
+#include <string>
+#include <cstdlib>
+#include <list>
+
+// networking
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+// recv
+#include <sys/types.h>
+#include <sys/socket.h>
+
+// inet_ntoa
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 class Connection;
 
@@ -22,7 +48,7 @@ private:
     int                Sock_fd;
     int                Max_fd;
 
-    std::list<Connection> Accepted_conns;
+    std::list<Connection *> Accepted_conns;
 
     void scan_events();
     void accept_incomers();

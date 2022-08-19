@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        printf("\n\tUsage: ./webserv [path to config file]\n\n");
+        OUT("Usage: ./webserv [path to config file]");
         return 1;
     }
 }

@@ -67,11 +67,11 @@ Server::Server(std::string const name ,
 
 Server::~Server()
 {
-    std::list<Connection>::iterator conn = Accepted_conns.begin();
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
 
     while (conn != Accepted_conns.end())
     {
-        close(conn->fd);
+        delete (*conn);
     }
 
     FD_ZERO(&Write_set);
@@ -119,7 +119,7 @@ void Server::accept_incomers()
         }
 
         fcntl(incomer, F_SETFD, O_NONBLOCK);
-        Accepted_conns.push_back(Connection(incomer));
+        Accepted_conns.push_back(new Connection(incomer));
         FD_SET(incomer, &Fd_set);
     	sockaddr_in incomer_addr;
         socklen_t incomer_socklen = sizeof(incomer_addr);
@@ -134,21 +134,21 @@ void Server::accept_incomers()
 void Server::scan_dead()
 {
     char dummy = 0;
-    std::list<Connection>::iterator conn = Accepted_conns.begin();
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
 
     while (conn != Accepted_conns.end())
     {
-        if (FD_ISSET(conn->fd, &Read_set))
+        if (FD_ISSET((*conn)->fd, &Read_set))
         {
-            const int received = recv(conn->fd, &dummy, sizeof(dummy), MSG_PEEK);
+            const int received = recv((*conn)->fd, &dummy, sizeof(dummy), MSG_PEEK);
 
             if (received == 0)
             {
-                FD_CLR(conn->fd, &Write_set);
-                FD_CLR(conn->fd, &Read_set);
-                FD_CLR(conn->fd, &Fd_set);
-                close(conn->fd);
-                OUT("Erased from all fd sets and closed connection: " << conn->fd);
+                FD_CLR((*conn)->fd, &Write_set);
+                FD_CLR((*conn)->fd, &Read_set);
+                FD_CLR((*conn)->fd, &Fd_set);
+                OUT("Erased from all fd sets: " << (*conn)->fd);
+                delete (*conn);
                 conn = Accepted_conns.erase(conn);
             }
         }
@@ -160,19 +160,19 @@ void Server::scan_dead()
 void Server::receive()
 {
     char accepted_buff[1000] = {0};
-    std::list<Connection>::iterator conn = Accepted_conns.begin();
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
 
     while (conn != Accepted_conns.end())
     {
-        if (FD_ISSET(conn->fd, &Read_set))
+        if (FD_ISSET((*conn)->fd, &Read_set))
         {
-            FD_CLR(conn->fd, &Read_set);
+            FD_CLR((*conn)->fd, &Read_set);
 
-            const int received = recv(conn->fd, accepted_buff, sizeof(accepted_buff) - 1, 0);
+            const int received = recv((*conn)->fd, accepted_buff, sizeof(accepted_buff) - 1, 0);
 
             if (received > 0)
             {
-                conn->set_accepted_msg(accepted_buff);
+                (*conn)->set_accepted_msg(accepted_buff);
                 OUT("Message received");
             }
 
@@ -184,14 +184,14 @@ void Server::receive()
 
 void Server::prepare_reply()
 {
-    std::list<Connection>::iterator conn = Accepted_conns.begin();
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
 
     while (conn != Accepted_conns.end())
     {
-        if (not conn->get_accepted_msg().empty())
+        if (not (*conn)->get_accepted_msg().empty())
         {
-            conn->set_reply_msg("\nAccepted from Server: General Kenobi\n\n");
-            conn->set_accepted_msg("");
+            (*conn)->set_reply_msg("\nAccepted from Server: General Kenobi\n\n");
+            (*conn)->set_accepted_msg("");
             OUT("Reply prepared");
         }
 
@@ -201,18 +201,18 @@ void Server::prepare_reply()
 
 void Server::reply()
 {
-    std::list<Connection>::iterator conn = Accepted_conns.begin();
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
 
     while (conn != Accepted_conns.end())
     {
-        if (FD_ISSET(conn->fd, &Write_set))
+        if (FD_ISSET((*conn)->fd, &Write_set))
         {
-            FD_CLR(conn->fd, &Write_set);
+            FD_CLR((*conn)->fd, &Write_set);
 
-            if (not conn->get_reply_msg().empty())
+            if (not (*conn)->get_reply_msg().empty())
             {
-                send(conn->fd, conn->get_reply_msg().c_str(), conn->get_reply_msg().length(), 0);
-                conn->set_reply_msg("");
+                send((*conn)->fd, (*conn)->get_reply_msg().c_str(), (*conn)->get_reply_msg().length(), 0);
+                (*conn)->set_reply_msg("");
                 OUT("Reply sent");
             }
         }
