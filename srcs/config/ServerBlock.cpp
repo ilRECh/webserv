@@ -11,14 +11,14 @@
  * location         - setup routes with one or multiple of the following
  * 
  */
-const char * ServerBlock::params[] =
+ABlock::ParamCallback ServerBlock::parsers_setup[] =
 {
-    "listen ",            //host:port
-    "server_name ",       //name [name [name] ...]
-    "error_page ",        //code path
-    "client_body_size ",  //num
-    "index ",             //path
-    "location "           //location path { ... } (See below)
+    { "listen "           , ServerBlock::parse_listen           } , //host:port
+    { "server_name "      , ServerBlock::parse_server_name      } , //name [name [name] ...]
+    { "error_page "       , ServerBlock::parse_error_page       } , //code path
+    { "client_body_size " , ServerBlock::parse_client_body_size } , //num
+    { "index "            , ServerBlock::parse_index            } , //path
+    { "location "         , ServerBlock::parse_location         }   //location path { ... }
 };
 
 ServerBlock::~ServerBlock()
@@ -45,4 +45,33 @@ void ServerBlock::validate()
 
 }
 
+void ServerBlock::parse_listen()
+{
+
+}
+
+void ServerBlock::parse_server_name()
+{
+
+}
+
+void ServerBlock::parse_error_page()
+{
+
+}
+
+void ServerBlock::parse_client_body_size()
+{
+
+}
+
+void ServerBlock::parse_index()
+{
+
+}
+
+void ServerBlock::parse_location()
+{
+
+}
 
