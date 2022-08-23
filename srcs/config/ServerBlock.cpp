@@ -37,34 +37,34 @@ ServerBlock::~ServerBlock()
     OUT("Destructor");
 }
 
-void ServerBlock::parse_listen()
+void ServerBlock::parse_listen(std::string value)
 {
-
+    (void)value;
 }
 
-void ServerBlock::parse_server_name()
+void ServerBlock::parse_server_name(std::string value)
 {
-
+    (void)value;
 }
 
-void ServerBlock::parse_error_page()
+void ServerBlock::parse_error_page(std::string value)
 {
-
+    (void)value;
 }
 
-void ServerBlock::parse_client_body_size()
+void ServerBlock::parse_client_body_size(std::string value)
 {
-
+    (void)value;
 }
 
-void ServerBlock::parse_index()
+void ServerBlock::parse_index(std::string value)
 {
-
+    (void)value;
 }
 
-void ServerBlock::parse_location()
+void ServerBlock::parse_location(std::string value)
 {
-
+    (void)value;
 }
 
 void ServerBlock::validate()

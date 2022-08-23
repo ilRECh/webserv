@@ -21,19 +21,16 @@ protected:
     struct ParamCallback
     {
         const char *param_name;
-        void (*callback)();
+        void (*callback)(std::string value);
         bool operator==(std::string to_compare)
         {
             return to_compare == param_name;
         }
     };
 
-    std::string Parameter;
-    std::string Value;
     std::list<ParamCallback> parsers;
 
-    void parse_block_parameter();
-    void validate_parameter_value();
+    void parse_and_validate_parameter(std::string parameter);
 public:
     ABlock(ParamCallback *first, ParamCallback *last);
     virtual ~ABlock() { OUT("Destructor"); };

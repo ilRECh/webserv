@@ -23,15 +23,13 @@ private:
     std::map<int, std::string> Error_pages;
     LocationBlock * location;
 
-    static void parse_listen();
-    static void parse_server_name();
-    static void parse_error_page();
-    static void parse_client_body_size();
-    static void parse_index();
-    static void parse_location();
+    static void parse_listen(std::string value);
+    static void parse_server_name(std::string value);
+    static void parse_error_page(std::string value);
+    static void parse_client_body_size(std::string value);
+    static void parse_index(std::string value);
+    static void parse_location(std::string value);
 
-    virtual void parse_block_parameter(); //override
-    virtual void validate_parameter_value(); //override
 public:
     ServerBlock();
     virtual ~ServerBlock(); //override
