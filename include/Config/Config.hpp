@@ -16,7 +16,6 @@ private:
 
     std::ifstream Config_file;
     std::map<std::string, ServerBlock *> Instances;
-    static const char * server_params[];
     static const char * location_params[];
 
 public:

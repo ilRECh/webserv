@@ -1,5 +1,6 @@
 #include "ServerBlock.hpp"
 #include "LocationBlock.hpp"
+#include <algorithm>
 
 /**
  * @brief server block
@@ -24,7 +25,7 @@ ABlock::ParamCallback ServerBlock::parsers_setup[] =
 ServerBlock::ServerBlock()
     :   ABlock(parsers_setup, parsers_setup + (sizeof(parsers_setup) / sizeof(ABlock::ParamCallback)))
 {
-    // OUT((std::(parsers.begin(), parsers.end(), "location ") != parsers.end()));
+    OUT("Constructor");
 }
 
 ServerBlock::~ServerBlock()
@@ -34,21 +35,6 @@ ServerBlock::~ServerBlock()
         delete location;
     }
     OUT("Destructor");
-}
-
-void ServerBlock::parse_block_parameter()
-{
-
-}
-
-void ServerBlock::validate_parameter_value()
-{
-
-}
-
-void ServerBlock::validate()
-{
-
 }
 
 void ServerBlock::parse_listen()
@@ -81,3 +67,7 @@ void ServerBlock::parse_location()
 
 }
 
+void ServerBlock::validate()
+{
+
+}

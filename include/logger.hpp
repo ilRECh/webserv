@@ -20,7 +20,7 @@ std::string str(T arg)
            << '<' << __LINE__ << "><"      \
                   << __FILE__ << "><"      \
                   << __func__ << ">\n--->" \
-                  << (OUTPUT) << std::endl)
+                  << OUTPUT << std::endl)
 
 #define NL "\n    "
 
@@ -32,6 +32,6 @@ std::string str(T arg)
                                      "><" +  \
                     std::string(__func__) +  \
                                      "> " +  \
-                                (ERROR_MSG)))
+                                ERROR_MSG))
 
 } // ft

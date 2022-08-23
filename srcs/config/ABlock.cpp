@@ -26,3 +26,5 @@ void ABlock::parse_block(Config &config)
         validate_parameter_value();
     }
 }
+
+

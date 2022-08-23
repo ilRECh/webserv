@@ -3,7 +3,6 @@
 #include <string>
 #include <fstream>
 #include <list>
-#include <algorithm>
 #include "logger.hpp"
 
 class Config;
@@ -33,8 +32,8 @@ protected:
     std::string Value;
     std::list<ParamCallback> parsers;
 
-    virtual void parse_block_parameter() = 0;
-    virtual void validate_parameter_value() = 0;
+    void parse_block_parameter();
+    void validate_parameter_value();
 public:
     ABlock(ParamCallback *first, ParamCallback *last);
     virtual ~ABlock() { OUT("Destructor"); };
