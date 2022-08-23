@@ -21,6 +21,12 @@ ABlock::ParamCallback ServerBlock::parsers_setup[] =
     { "location "         , ServerBlock::parse_location         }   //location path { ... }
 };
 
+ServerBlock::ServerBlock()
+    :   ABlock(parsers_setup, parsers_setup + (sizeof(parsers_setup) / sizeof(ABlock::ParamCallback)))
+{
+    // OUT((std::(parsers.begin(), parsers.end(), "location ") != parsers.end()));
+}
+
 ServerBlock::~ServerBlock()
 {
     if (location != NULL)

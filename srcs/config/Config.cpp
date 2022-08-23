@@ -1,4 +1,5 @@
 #include "Config.hpp"
+#include "ServerBlock.hpp"
 
 /**
  * @brief location block
@@ -44,6 +45,8 @@ bool Config::good()
 
 void Config::read_file()
 {
+    ServerBlock block;
+
     while (Config_file.good())
     {
         if (getline_trimmed() == "server {")
