@@ -1,13 +1,23 @@
 #include "Dispatcher.hpp"
 #include "Config.hpp"
 
-Dispatcher::Dispatcher(std::string const path_to_config_file)
-    :   config(path_to_config_file)
+Dispatcher::Dispatcher()
 {
-    OUT("Dispatcher is created");
+    OUT("Done");
 }
 
-void Dispatcher::run()
+Dispatcher::~Dispatcher()
 {
+    OUT("Done");
+}
 
+void Dispatcher::read_config(std::string config_file)
+{
+    Config config(config_file);
+
+    try {
+        config.read_file();
+    } catch (std::exception &e) {
+        throw;
+    }
 }

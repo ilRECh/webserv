@@ -6,16 +6,15 @@
 class Dispatcher
 {
 private:
-    Dispatcher();
     Dispatcher(Dispatcher& that);
     Dispatcher& operator=(Dispatcher& that);
 
-    Config config;
-
     void dispatch();
 public:
-    Dispatcher(std::string const path_to_config_file);
+    Dispatcher();
+    ~Dispatcher();
     
+    void read_config(std::string config_file);
     void run();
 
 };

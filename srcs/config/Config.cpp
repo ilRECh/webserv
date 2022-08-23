@@ -64,19 +64,13 @@ Config::Config(std::string const path_to_config_file)
     {
         throw ERR("Config invalid");
     }
+    OUT("Done");
+}
 
-    try {
-        read_file();
-    } catch (...) {
-        Instances.clear();
-    }
-
+Config::~Config()
+{
     Config_file.close();
-
-    if (Instances.empty())
-    {
-        throw ERR("Config invalid");
-    }
+    OUT("Done");
 }
 
 void Config::read_file()
@@ -89,7 +83,7 @@ void Config::read_file()
 
         if (line == "server {")
         {
-            
+
         }
     }
 }

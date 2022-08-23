@@ -18,7 +18,8 @@ private:
     static const char * server_params[];
     static const char * location_params[];
 
-    void read_file();
+    static void getline_trimmed(std::ifstream &input, std::string &line);
+
     void parse_server_instance();
     void parse_server_instance_parameter(ServerInstance &instance,
                                          std::string &parameter);
@@ -28,4 +29,5 @@ private:
 public:
     Config(std::string const path_to_config_file);
 
+    void read_file();
 };

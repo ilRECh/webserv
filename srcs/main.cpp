@@ -5,12 +5,13 @@ int main(int argc, char **argv)
     if (argc == 2)
     {
         try {
-            Dispatcher webserv(argv[1]);
+            Dispatcher webserv;
+            webserv.read_config(argv[1]);
             webserv.run();
         } catch (std::exception& e) {
             OUT("Catched: " << e.what());
         } catch (...) {
-            OUT("Couldn't catch");
+            OUT("Unknown catched");
         }
         return 0;
     }
