@@ -1,4 +1,5 @@
 #include "ServerBlock.hpp"
+#include "LocationBlock.hpp"
 
 /**
  * @brief server block
@@ -19,3 +20,29 @@ const char * ServerBlock::params[] =
     "index ",             //path
     "location "           //location path { ... } (See below)
 };
+
+ServerBlock::~ServerBlock()
+{
+    if (location != NULL)
+    {
+        delete location;
+    }
+    OUT("Destructor");
+}
+
+void ServerBlock::parse_block_parameter()
+{
+
+}
+
+void ServerBlock::validate_parameter_value()
+{
+
+}
+
+void ServerBlock::validate()
+{
+
+}
+
+

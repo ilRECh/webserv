@@ -11,6 +11,8 @@ private:
 
     void dispatch();
 public:
+    Dispatcher() { OUT("Constructor"); };
+    ~Dispatcher() { OUT("Destructor"); };
     void read_config(std::string config_file);
     void run();
 };

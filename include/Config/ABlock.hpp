@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include "logger.hpp"
 
 class Config;
 
@@ -22,6 +23,7 @@ protected:
     virtual void parse_block_parameter() = 0;
     virtual void validate_parameter_value() = 0;
 public:
-    virtual ~ABlock() {};
+    virtual ~ABlock() { OUT("Destructor"); };
     void parse_block(Config &config);
+    virtual void validate() = 0;
 };

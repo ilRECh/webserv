@@ -21,6 +21,7 @@ private:
 
 public:
     Config(std::string const path_to_config_file);
+    ~Config();
 
     bool good();
     void read_file();

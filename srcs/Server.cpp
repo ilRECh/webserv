@@ -80,19 +80,17 @@ Server::~Server()
     freeaddrinfo(Net_info);
     close(Sock_fd);
     OUT("Free Net_info and close Sock_fd");
+    OUT("Destructor");
 }
 
 void Server::run()
 {
-    while (true)
-    {
-        scan_events();
-        accept_incomers();
-        scan_dead();
-        receive();
-        prepare_reply();
-        reply();
-    }
+    scan_events();
+    accept_incomers();
+    scan_dead();
+    receive();
+    prepare_reply();
+    reply();
 }
 
 void Server::scan_events()

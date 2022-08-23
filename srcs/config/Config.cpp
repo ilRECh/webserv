@@ -27,11 +27,14 @@ Config::Config(std::string const path_to_config_file)
     {
         throw ERR("Config opening error");
     }
+
+    OUT("Constructor");
 }
 
 Config::~Config()
 {
     Config_file.close();
+    OUT("Destructor");
 }
 
 bool Config::good()

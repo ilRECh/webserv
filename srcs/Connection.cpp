@@ -29,6 +29,7 @@ Connection::~Connection()
 {
     close(fd);
     OUT("Closed socket: " << fd);
+    OUT("Destructor");
 }
 
 void Connection::set_accepted_msg(char const * _accepted_msg)

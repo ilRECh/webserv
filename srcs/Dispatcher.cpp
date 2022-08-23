@@ -14,3 +14,8 @@ void Dispatcher::read_config(std::string config_file)
 
     // config.get_servers();
 }
+
+void Dispatcher::run()
+{
+    
+}

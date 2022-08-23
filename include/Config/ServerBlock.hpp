@@ -20,6 +20,11 @@ private:
     std::string Index_file;
     std::map<int, std::string> Error_pages;
     LocationBlock * location;
+
+    virtual void parse_block_parameter(); //override
+    virtual void validate_parameter_value(); //override
+
 public:
-    virtual ~ServerBlock();
+    virtual ~ServerBlock(); //override
+    virtual void validate(); //override
 };
