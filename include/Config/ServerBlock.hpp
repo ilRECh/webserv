@@ -11,6 +11,8 @@ private:
     ServerBlock(ServerBlock &that);
     ServerBlock& operator=(ServerBlock &that);
 
+    static const char * params[];
+
     std::string Host;
     std::string Port;
     std::string Server_name;

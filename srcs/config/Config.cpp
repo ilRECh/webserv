@@ -46,8 +46,14 @@ void Config::read_file()
         if (getline_trimmed() == "server {")
         {
             //ServerBlock *block = new ServerBlock();
-            //block.parse_block();
-            
+            //try {
+                //block.parse_block();
+                //block.validate();
+            // } catch (std::exception &e) {
+                // delete block;
+                // throw;
+            // }
+
             //if (Instances.find() != Instances.end())
             //{
             //    Instances.insert(make_pair(block.get_host() + ":" + block.get_port(), block));

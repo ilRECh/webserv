@@ -2,7 +2,12 @@
 
 /**
  * @brief server block
- * 
+ * listen           - choose the port and host
+ * server_name      - setup or not
+ * error_page       - setup default error pages
+ * client_body_size - limit client body size
+ * index            - default page when accessing the basic url, if provided
+ * location         - setup routes with one or multiple of the following
  * 
  */
 const char * ServerBlock::params[] =
