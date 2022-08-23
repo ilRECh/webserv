@@ -72,6 +72,7 @@ Server::~Server()
     while (conn != Accepted_conns.end())
     {
         delete (*conn);
+        ++conn;
     }
 
     FD_ZERO(&Write_set);

@@ -15,6 +15,14 @@ Config::Config(std::string const path_to_config_file)
 Config::~Config()
 {
     Config_file.close();
+
+    std::map<std::string, ServerBlock *>::iterator instance = Instances.begin();
+    while (instance != Instances.end())
+    {
+        delete instance->second;
+        ++instance;
+    }
+
     OUT("Destructor");
 }
 
@@ -31,14 +39,14 @@ void Config::read_file()
     {
         if (getline_trimmed() == "server {")
         {
-            //ServerBlock *block = new ServerBlock();
-            //try {
-                //block.parse_block();
-                //block.validate();
-            // } catch (std::exception &e) {
-                // delete block;
-                // throw;
-            // }
+            ServerBlock *block = new ServerBlock();
+            try {
+                block->parse_block(*this);
+                block->validate();
+            } catch (std::exception &e) {
+                delete block;
+                throw;
+            }
 
             //if (Instances.find() != Instances.end())
             //{
