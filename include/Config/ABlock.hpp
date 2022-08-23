@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+class Config;
+
 /**
  * @brief Abstrac class, Block parsing base
  * 
@@ -10,17 +12,16 @@
 class ABlock
 {
 private:
-    ABlock();
     ABlock(ABlock &that);
     ABlock &operator=(ABlock &that);
 
 protected:
     std::string Parameter;
-    std::fstream &Config_file;
+    std::string Value;
 
-    void read_parameter();
-    virtual void parse_parameter() = 0;
-    virtual void check_parameter_value() = 0;
+    virtual void parse_block_parameter() = 0;
+    virtual void validate_parameter_value() = 0;
 public:
-    ABlock(std::fstream &config_file);
+    virtual ~ABlock() {};
+    void parse_block(Config &config);
 };

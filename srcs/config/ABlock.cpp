@@ -1,19 +1,22 @@
 #include "ABlock.hpp"
+#include "Config.hpp"
 
-ABlock::ABlock(std::fstream &config_file)
+void ABlock::parse_block(Config &config)
 {
-    while (Config_file.good())
+    while (config.good())
     {
-        getline_trimmed(Config_file, line);
-        parse_server_instance_parameter(tmp_server_instace, line);
-
-        if (Config_file.good() and line == "}")
+        Parameter = config.getline_trimmed();
+        
+        if (not config.good())
+        {
+            throw ERR("Block does not end properly");
+        }
+        else if (Parameter == "}")
         {
             break;
         }
-        else if (Config_file.bad())
-        {
-            throw ERR("");
-        }
+        
+        parse_block_parameter();
+        validate_parameter_value();
     }
 }

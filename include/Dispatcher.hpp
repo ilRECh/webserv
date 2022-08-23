@@ -11,10 +11,6 @@ private:
 
     void dispatch();
 public:
-    Dispatcher();
-    ~Dispatcher();
-    
     void read_config(std::string config_file);
     void run();
-
 };

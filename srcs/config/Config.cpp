@@ -1,42 +1,5 @@
 #include "Config.hpp"
 
-static void trim(std::string &to_trim)
-{
-    char const * whitespaces = "\x07\x08\x09\x0A\x0B\x0C\x0D\x20";
-    size_t pos = 0;
-
-    if ((pos = to_trim.find_first_not_of(whitespaces)) != to_trim.npos)
-    {
-        to_trim.erase(0, pos);
-    }
-
-    if ((pos = to_trim.find_last_not_of(whitespaces)) != to_trim.npos)
-    {
-        to_trim.erase(pos + 1, to_trim.length());
-    }
-}
-
-static void getline_trimmed(std::ifstream &input, std::string &line)
-{
-    std::getline(input, line);
-    trim(line);
-}
-
-/**
- * @brief server block
- * 
- * 
- */
-const char * Config::server_params[] =
-{
-    "listen ",            //host:port
-    "server_name ",       //name [name [name] ...]
-    "error_page ",        //code path
-    "client_body_size ",  //num
-    "index ",             //path
-    "location "           //location path { ... } (See below)
-};
-
 /**
  * @brief location block
  * allow_methods - define a list of accepted HTTP methods for the route.
@@ -62,67 +25,65 @@ Config::Config(std::string const path_to_config_file)
 {
     if (Config_file.fail())
     {
-        throw ERR("Config invalid");
+        throw ERR("Config opening error");
     }
-    OUT("Done");
 }
 
 Config::~Config()
 {
     Config_file.close();
-    OUT("Done");
+}
+
+bool Config::good()
+{
+    return Config_file.good();
 }
 
 void Config::read_file()
 {
-    std::string line;
-
     while (Config_file.good())
     {
-        getline_trimmed(Config_file, line);
-
-        if (line == "server {")
+        if (getline_trimmed() == "server {")
         {
-
+            //ServerBlock *block = new ServerBlock();
+            //block.parse_block();
+            
+            //if (Instances.find() != Instances.end())
+            //{
+            //    Instances.insert(make_pair(block.get_host() + ":" + block.get_port(), block));
+            //}
+            //else
+            //{
+            //    delete block;
+            //}
         }
     }
 }
 
-void Config::parse_server_instance()
+std::string Config::getline_trimmed()
 {
-    ServerInstance tmp_server_instace;
+    char const * whitespaces = "\x07\x08\x09\x0A\x0B\x0C\x0D\x20";
     std::string line;
+    size_t pos = 0;
 
-    while (Config_file.good())
+    if (Config_file.good())
     {
-        getline_trimmed(Config_file, line);
-        parse_server_instance_parameter(tmp_server_instace, line);
+        std::getline(Config_file, line);
 
-        if (Config_file.good() and line == "}")
+        if ((pos = line.find_first_not_of(whitespaces)) != line.npos)
         {
-            break;
+            line.erase(0, pos);
         }
-        else if (Config_file.bad())
+
+        if ((pos = line.find_last_not_of(whitespaces)) != line.npos)
         {
-            throw ERR("");
+            line.erase(pos + 1, line.length());
         }
     }
+    else
+    {
+        throw ERR("Getline failed");
+    }
 
-    // if (examine_server_instance(tmp_server_instace))
-    // {
-    //     add_server_instance(tmp_server_instace);
-    // }
-    // else
-    // {
-    //     throw ERR("");
-    // }
-
+    return line;
 }
-
-void Config::parse_server_instance_parameter(ServerInstance &instance,
-                                             std::string &parameter)
-{
-    (void)instance;
-    (void)parameter;
-}
-
