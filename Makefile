@@ -6,7 +6,7 @@ OBJ_DIR		:= ./objects
 APP_DIR		:= ./
 INC_DIRS	:= $(shell find ./include -type d)
 INCLUDE		:= $(addprefix -I,$(INC_DIRS))
-SRC			:= $(wildcard srcs/*.cpp)
+SRC			:= $(shell find srcs -type "f" -name "*.cpp")
 
 OBJECTS		:= $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 DEPENDENCIES := $(OBJECTS:.o=.d)

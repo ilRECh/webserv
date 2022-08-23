@@ -15,10 +15,15 @@ private:
 
     std::ifstream Config_file;
     std::map<std::string, ServerInstance> Instances;
+    static const char * server_params[];
+    static const char * location_params[];
 
     void read_file();
-    void add_server_instance();
     void parse_server_instance();
+    void parse_server_instance_parameter(ServerInstance &instance,
+                                         std::string &parameter);
+    bool examine_server_instance(ServerInstance &instance);
+    void add_server_instance(ServerInstance &instance);
 
 public:
     Config(std::string const path_to_config_file);
