@@ -14,10 +14,10 @@ private:
     ServerBlock(ServerBlock &that);
     ServerBlock& operator=(ServerBlock &that);
 
+    size_t Client_body_size;
     std::string Host;
     std::string Port;
     std::set<std::string> Server_name;
-    int Client_body_size;
     std::map<int, std::string> Error_pages;
     std::map<std::string, LocationBlock *> Locations;
 

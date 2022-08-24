@@ -21,12 +21,46 @@
 // };
 
 LocationBlock::LocationBlock(ConfigFile & config)
-    :   ABlock(config)
+    :   ABlock(config),
+        Autoindex(-1),
+        Return(std::make_pair(-1, ""))
 {
     OUT_DBG("Constructor");
 }
 
+void LocationBlock::parse_allow_methods(std::string value)
+{
+(void) value;
+}
+
+void LocationBlock::parse_root(std::string value)
+{
+(void) value;
+}
+
+void LocationBlock::parse_index(std::string value)
+{
+(void) value;
+}
+
+void LocationBlock::parse_autoindex(std::string value)
+{
+(void) value;
+}
+
+void LocationBlock::parse_return(std::string value)
+{
+(void) value;
+}
+
 void LocationBlock::validate()
 {
-    
+    if (Allow_methods.empty() or
+        Root.empty()          or
+        Index.empty()         or
+        Autoindex == -1       or
+        Return.first == -1)
+    {
+        throw ERR("Invalid location block");
+    }
 }

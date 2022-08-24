@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ABlock.hpp"
+#include <set>
 #include <map>
 
 class ConfigFile;
@@ -11,17 +12,17 @@ private:
     LocationBlock(LocationBlock &that);
     LocationBlock& operator=(LocationBlock &that);
 
-    std::set<std::string> Method_names;
+    int Autoindex;
+    std::pair<int, std::string> Return; //Redirection parameter
+    std::set<std::string> Allow_methods;
     std::string Root;
     std::string Index;
-    bool Autoindex;
-    std::pair<int, std::string> Return; //Redirection parameter
 
-    void parse_method_names();
-    void parse_root();
-    void parse_index();
-    void parse_autoindex();
-    void parse_return();
+    void parse_allow_methods(std::string value);
+    void parse_root(std::string value);
+    void parse_index(std::string value);
+    void parse_autoindex(std::string value);
+    void parse_return(std::string value);
 
 public:
     LocationBlock(ConfigFile & config);

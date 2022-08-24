@@ -14,7 +14,7 @@
  * 
  */
 ServerBlock::ServerBlock(ConfigFile & config)
-    :   ABlock(config)
+    :   ABlock(config), Client_body_size(0)
 {
     //host:port
     parsers.push_back(
@@ -176,9 +176,18 @@ void ServerBlock::parse_location(std::string value)
             try {
                 block->parse_block();
                 block->validate();
+
+                if (Locations.find(URL) != Locations.end())
+                {
+                    Locations.insert(std::make_pair(URL, block));
+                }
+                else
+                {
+                    delete block;
+                }
             } catch (std::exception &e) {
                 OUT("Catched from LocationBlock: " << e.what());
-                throw ERR("Location block invalid");
+                delete block;
             }
         }
     }
