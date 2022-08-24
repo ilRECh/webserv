@@ -13,19 +13,33 @@
  * location         - setup routes with one or multiple of the following
  * 
  */
-ABlock::ParamCallback ServerBlock::parsers_setup[] =
-{
-    { "listen "           , ServerBlock::parse_listen           } , //host:port
-    { "server_name "      , ServerBlock::parse_server_name      } , //name [name [name] ...]
-    { "error_page "       , ServerBlock::parse_error_page       } , //code path
-    { "client_body_size " , ServerBlock::parse_client_body_size } , //num
-    { "index "            , ServerBlock::parse_index            } , //path
-    { "location "         , ServerBlock::parse_location         }   //location path { ... }
-};
-
 ServerBlock::ServerBlock()
-    :   ABlock(parsers_setup, parsers_setup + (sizeof(parsers_setup) / sizeof(ABlock::ParamCallback)))
+    :   ABlock()
 {
+    //host:port
+    parsers.push_back(
+        ABlock::ParamCallback("listen " , std::mem_fun(&ServerBlock::parse_listen), this)
+    );
+
+    //name [name [name] ...]
+    parsers.push_back(
+        ABlock::ParamCallback("server_name "  , std::mem_fun(&ServerBlock::parse_server_name), this)
+    );
+
+    //code path
+    parsers.push_back(
+        ABlock::ParamCallback("error_page " , std::mem_fun(&ServerBlock::parse_error_page), this)
+    );
+
+    //num
+    parsers.push_back(
+        ABlock::ParamCallback("client_body_size " , std::mem_fun(&ServerBlock::parse_client_body_size), this)
+    );
+
+    //location path { ... }
+    parsers.push_back(
+        ABlock::ParamCallback("location " , std::mem_fun(&ServerBlock::parse_location), this)
+    );
     OUT_DBG("Constructor");
 }
 
@@ -56,6 +70,12 @@ void ServerBlock::parse_listen(std::string value)
         }
 
         host = value.substr(0, delimiter_pos);
+
+        if (host.empty())
+        {
+            host = "127.0.0.1";
+        }
+
         port = value.substr(delimiter_pos + 1, value.length());
     }
     else
@@ -71,12 +91,12 @@ void ServerBlock::parse_listen(std::string value)
 
         strcpy(host_copy, host.c_str());
 
-        char * octet = std::strtok(host_copy, ".");
+        char * octet_copy = std::strtok(host_copy, ".");
 
-        while (octet != NULL)
+        while (octet_copy != NULL)
         {
-            octets.push_back(octet);
-            octet = std::strtok(NULL, ".");
+            octets.push_back(octet_copy);
+            octet_copy = std::strtok(NULL, ".");
         }
 
         delete host_copy;
@@ -84,6 +104,18 @@ void ServerBlock::parse_listen(std::string value)
         if (octets.size() != 4)
         {
             throw ERR(msg);
+        }
+
+        std::list<std::string>::iterator octet = octets.begin();
+        while (octet != octets.end())
+        {
+            int octet_num = std::atoi(octet->c_str());
+
+            if ((octet_num == 0 and *octet != "0") or
+                (0 > octet_num or octet_num > 255))
+            {
+                throw ERR(msg);
+            }
         }
     }
 
@@ -93,6 +125,9 @@ void ServerBlock::parse_listen(std::string value)
     {
         throw ERR(msg);
     }
+
+    // Host = host;
+    // Port = port;
 }
 
 void ServerBlock::parse_server_name(std::string value)
@@ -106,11 +141,6 @@ void ServerBlock::parse_error_page(std::string value)
 }
 
 void ServerBlock::parse_client_body_size(std::string value)
-{
-    (void)value;
-}
-
-void ServerBlock::parse_index(std::string value)
 {
     (void)value;
 }

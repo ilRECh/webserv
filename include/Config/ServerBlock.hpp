@@ -7,13 +7,13 @@
 
 class LocationBlock;
 
-class ServerBlock : public ABlock
+class ServerBlock : public ABlock<ServerBlock>
 {
 private:
     ServerBlock(ServerBlock &that);
     ServerBlock& operator=(ServerBlock &that);
 
-    static ABlock::ParamCallback parsers_setup[];
+    // std::list<std::pair<std::string, std::mem_fun1_t<void, ServerBlock, std::string> > > parsers;
 
     std::string Host;
     std::string Port;
@@ -23,12 +23,12 @@ private:
     std::map<int, std::string> Error_pages;
     std::map<std::string, LocationBlock *> Locations;
 
-    static void parse_listen(std::string value);
-    static void parse_server_name(std::string value);
-    static void parse_error_page(std::string value);
-    static void parse_client_body_size(std::string value);
-    static void parse_index(std::string value);
-    static void parse_location(std::string value);
+    void parse_listen(std::string value);
+    void parse_server_name(std::string value);
+    void parse_error_page(std::string value);
+    void parse_client_body_size(std::string value);
+    void parse_index(std::string value);
+    void parse_location(std::string value);
 
 public:
     ServerBlock();

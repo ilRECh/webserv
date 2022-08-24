@@ -1,6 +1,6 @@
 TARGET		:= webserv
 CXX			:= g++
-CXXFLAGS	:= -pedantic-errors -Wall -Wextra -Werror -std=c++98 -pedantic -fdiagnostics-color=always
+CXXFLAGS	:= -Wall -Wextra -Werror -std=c++98 -fdiagnostics-color=always
 LDFLAGS		:= -L/usr/lib -lstdc++ -lm
 OBJ_DIR		:= ./objects
 APP_DIR		:= ./
