@@ -1,9 +1,9 @@
 #include "Dispatcher.hpp"
-#include "Config.hpp"
+#include "ConfigFile.hpp"
 
 void Dispatcher::read_config(std::string config_file)
 {
-    Config config(config_file);
+    ConfigFile config(config_file);
 
     try {
         config.read_file();

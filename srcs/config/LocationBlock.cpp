@@ -11,7 +11,7 @@
  * upload_pass   - make the route able to accept uploaded files.
  * upload_store  - configure where uploaded files should be saved.
  */
-// ABlock::ParamCallback Config::setup_params[] =
+// ABlock::ParamCallback ConfigFile::setup_params[] =
 // {
 //     { "allow_methods " ,    //method_name [method_name [method_name]]
 //     { "root "          ,    //path
@@ -19,3 +19,14 @@
 //     { "autoindex "     ,    //on/off
 //     { "return "             //code uri
 // };
+
+LocationBlock::LocationBlock(ConfigFile & config)
+    :   ABlock(config)
+{
+    OUT_DBG("Constructor");
+}
+
+void LocationBlock::validate()
+{
+    
+}

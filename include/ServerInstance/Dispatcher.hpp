@@ -1,7 +1,7 @@
 #pragma once
 
 #include "logger.hpp"
-#include "Config.hpp"
+#include "ConfigFile.hpp"
 
 class Dispatcher
 {

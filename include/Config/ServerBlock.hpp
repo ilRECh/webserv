@@ -6,6 +6,7 @@
 #include <set>
 
 class LocationBlock;
+class ConfigFile;
 
 class ServerBlock : public ABlock<ServerBlock>
 {
@@ -28,7 +29,7 @@ private:
     void parse_location(std::string value);
 
 public:
-    ServerBlock();
+    ServerBlock(ConfigFile & config);
     virtual ~ServerBlock(); //override
     virtual void validate(); //override
 };

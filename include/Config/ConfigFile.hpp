@@ -7,20 +7,20 @@
 
 class ServerBlock;
 
-class Config
+class ConfigFile
 {
 private:
-    Config();
-    Config(Config& that);
-    Config &operator=(Config& that);
+    ConfigFile();
+    ConfigFile(ConfigFile& that);
+    ConfigFile &operator=(ConfigFile& that);
 
     std::ifstream Config_file;
     std::map<std::string, ServerBlock *> Instances;
     static const char * location_params[];
 
 public:
-    Config(std::string const path_to_config_file);
-    ~Config();
+    ConfigFile(std::string const path_to_config_file);
+    ~ConfigFile();
 
     bool good();
     void read_file();

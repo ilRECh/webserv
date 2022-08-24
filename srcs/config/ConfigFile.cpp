@@ -1,7 +1,7 @@
-#include "Config.hpp"
+#include "ConfigFile.hpp"
 #include "ServerBlock.hpp"
 
-Config::Config(std::string const path_to_config_file)
+ConfigFile::ConfigFile(std::string const path_to_config_file)
     :   Config_file(path_to_config_file.c_str())
 {
     if (Config_file.fail())
@@ -12,7 +12,7 @@ Config::Config(std::string const path_to_config_file)
     OUT_DBG("Constructor");
 }
 
-Config::~Config()
+ConfigFile::~ConfigFile()
 {
     Config_file.close();
 
@@ -26,20 +26,21 @@ Config::~Config()
     OUT_DBG("Destructor");
 }
 
-bool Config::good()
+bool ConfigFile::good()
 {
     return Config_file.good();
 }
 
-void Config::read_file()
+void ConfigFile::read_file()
 {
     while (Config_file.good())
     {
         if (getline_trimmed() == "server {")
         {
-            ServerBlock *block = new ServerBlock();
+            ServerBlock *block = new ServerBlock(*this);
+
             try {
-                block->parse_block(*this);
+                block->parse_block();
                 block->validate();
             } catch (std::exception &e) {
                 delete block;
@@ -58,7 +59,7 @@ void Config::read_file()
     }
 }
 
-std::string Config::getline_trimmed()
+std::string ConfigFile::getline_trimmed()
 {
     char const * whitespaces = "\x07\x08\x09\x0A\x0B\x0C\x0D\x20";
     std::string line;

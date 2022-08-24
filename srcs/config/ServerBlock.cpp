@@ -13,8 +13,8 @@
  * location         - setup routes with one or multiple of the following
  * 
  */
-ServerBlock::ServerBlock()
-    :   ABlock()
+ServerBlock::ServerBlock(ConfigFile & config)
+    :   ABlock(config)
 {
     //host:port
     parsers.push_back(
@@ -159,7 +159,31 @@ void ServerBlock::parse_client_body_size(std::string value)
 
 void ServerBlock::parse_location(std::string value)
 {
-    (void)value;
+    char * value_buf = new char[value.length() + 1];
+
+    strcpy(value_buf, value.c_str());
+
+    char * URL = std::strtok(value_buf, " ");
+
+    if (URL != NULL)
+    {
+        char * block_begin = std::strtok(NULL, " ");
+
+        if (block_begin != NULL and std::string(block_begin) == "{")
+        {
+            LocationBlock *block = new LocationBlock(Config);
+            
+            try {
+                block->parse_block();
+                block->validate();
+            } catch (std::exception &e) {
+                OUT("Catched from LocationBlock: " << e.what());
+                throw ERR("Location block invalid");
+            }
+        }
+    }
+
+    delete value_buf;
 }
 
 void ServerBlock::validate()

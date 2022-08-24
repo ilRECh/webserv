@@ -25,7 +25,7 @@ Server::Server(std::string const name ,
         throw ERR(gai_strerror(errno));
     }
 
-    if (1024 > std::atoi(Port.c_str()) || std::atoi(Port.c_str()) > 65535)
+    if (1024 > std::atoi(Port.c_str()) or std::atoi(Port.c_str()) > 65535)
     {
         throw ERR("port range [1024,65535]");
     }

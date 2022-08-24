@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 #include "logger.hpp"
-#include "Config.hpp"
+#include "ConfigFile.hpp"
 
 /**
  * @brief Abstrac class, Block parsing base
@@ -38,6 +38,7 @@ protected:
         }
     };
 
+    ConfigFile & Config;
     std::vector<ParamCallback> parsers;
 
     void parse_and_validate_parameter(std::string parameter)
@@ -60,18 +61,18 @@ protected:
     }
 
 public:
-    ABlock() { OUT_DBG("Constructor"); };
+    ABlock(ConfigFile & config) : Config(config) { OUT_DBG("Constructor"); };
     virtual ~ABlock() { OUT_DBG("Destructor"); };
 
-    void parse_block(Config &config)
+    void parse_block()
     {
         std::string line;
 
-        while (config.good())
+        while (Config.good())
         {
-            line = config.getline_trimmed();
+            line = Config.getline_trimmed();
             
-            if (not config.good())
+            if (not Config.good())
             {
                 throw ERR("Block does not end properly");
             }
