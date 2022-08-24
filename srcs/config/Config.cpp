@@ -9,7 +9,7 @@ Config::Config(std::string const path_to_config_file)
         throw ERR("Config opening error");
     }
 
-    OUT("Constructor");
+    OUT_DBG("Constructor");
 }
 
 Config::~Config()
@@ -23,7 +23,7 @@ Config::~Config()
         ++instance;
     }
 
-    OUT("Destructor");
+    OUT_DBG("Destructor");
 }
 
 bool Config::good()
@@ -33,8 +33,6 @@ bool Config::good()
 
 void Config::read_file()
 {
-    ServerBlock block;
-
     while (Config_file.good())
     {
         if (getline_trimmed() == "server {")

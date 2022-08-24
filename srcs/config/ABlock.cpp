@@ -4,7 +4,7 @@
 ABlock::ABlock(ParamCallback *first, ParamCallback *last)
     :   parsers(first, last)
 {
-    OUT("Constructor");
+    OUT_DBG("Constructor");
 }
 
 void ABlock::parse_block(Config &config)

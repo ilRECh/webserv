@@ -29,7 +29,7 @@ build:
 	@mkdir -p $(APP_DIR)
 	@mkdir -p $(OBJ_DIR)
 
-debug: CXXFLAGS += -g
+debug: CXXFLAGS += -g -D DEBUG_OUTPUT
 debug: all
 
 release: CXXFLAGS += -O2

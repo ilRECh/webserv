@@ -21,7 +21,7 @@ private:
     int Client_body_size;
     std::string Index_file;
     std::map<int, std::string> Error_pages;
-    LocationBlock * location;
+    std::map<std::string, LocationBlock *> Locations;
 
     static void parse_listen(std::string value);
     static void parse_server_name(std::string value);

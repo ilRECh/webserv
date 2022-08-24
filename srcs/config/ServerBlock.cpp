@@ -1,6 +1,7 @@
 #include "ServerBlock.hpp"
 #include "LocationBlock.hpp"
 #include <algorithm>
+#include <cstring>
 
 /**
  * @brief server block
@@ -25,23 +26,72 @@ ABlock::ParamCallback ServerBlock::parsers_setup[] =
 ServerBlock::ServerBlock()
     :   ABlock(parsers_setup, parsers_setup + (sizeof(parsers_setup) / sizeof(ABlock::ParamCallback)))
 {
-    OUT("Constructor");
+    OUT_DBG("Constructor");
 }
 
 ServerBlock::~ServerBlock()
 {
-    if (location != NULL)
+    std::map<std::string, LocationBlock *>::iterator location = Locations.begin();
+    while (location != Locations.end())
     {
-        delete location;
+        delete location->second;
+        ++location;
     }
-    OUT("Destructor");
+
+    OUT_DBG("Destructor");
 }
 
 void ServerBlock::parse_listen(std::string value)
 {
-    if (value.find(':') == value.npos or value.find(':') != value.rfind(':'))
+    const char * msg = "Invalid host:port value of the listen parameter";
+    std::string host;
+    std::string port;
+    size_t delimiter_pos = value.find(':');
+
+    if (delimiter_pos != value.npos)
     {
-        throw ERR("");
+        if (delimiter_pos != value.rfind(':'))
+        {
+            throw ERR(msg);
+        }
+
+        host = value.substr(0, delimiter_pos);
+        port = value.substr(delimiter_pos + 1, value.length());
+    }
+    else
+    {
+        host = "127.0.0.1";
+        port = value;
+    }
+
+    if (host != "127.0.0.1")
+    {
+        std::list<std::string> octets;
+        char * host_copy = new char[host.size() + 1];
+
+        strcpy(host_copy, host.c_str());
+
+        char * octet = std::strtok(host_copy, ".");
+
+        while (octet != NULL)
+        {
+            octets.push_back(octet);
+            octet = std::strtok(NULL, ".");
+        }
+
+        delete host_copy;
+
+        if (octets.size() != 4)
+        {
+            throw ERR(msg);
+        }
+    }
+
+    int port_num = std::atoi(port.c_str());
+
+    if (1024 > port_num or port_num > 65536)
+    {
+        throw ERR(msg);
     }
 }
 
@@ -74,6 +124,6 @@ void ServerBlock::validate()
 {
     if (Host.empty() or Port.empty())
     {
-        throw ERR("Host");
+        throw ERR("host:port invalid");
     }
 }

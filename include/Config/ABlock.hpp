@@ -33,7 +33,7 @@ protected:
     void parse_and_validate_parameter(std::string parameter);
 public:
     ABlock(ParamCallback *first, ParamCallback *last);
-    virtual ~ABlock() { OUT("Destructor"); };
+    virtual ~ABlock() { OUT_DBG("Destructor"); };
     void parse_block(Config &config);
     virtual void validate() = 0;
 };

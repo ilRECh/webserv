@@ -22,6 +22,19 @@ std::string str(T arg)
                   << __func__ << ">\n--->" \
                   << OUTPUT << std::endl)
 
+#ifdef DEBUG_OUTPUT
+
+#define OUT_DBG(OUTPUT)                    \
+(std::cout << std::boolalpha               \
+          << "< " << __FILE__ << ":"       \
+                  << __LINE__ << " ><"     \
+                  << __func__ << ">\n--->" \
+                  << OUTPUT << std::endl)
+
+#else
+#define OUT_DBG(OUTPUT)
+#endif
+
 #define NL "\n    "
 
 #define ERR(ERROR_MSG)                       \

@@ -81,7 +81,7 @@ Server::~Server()
     freeaddrinfo(Net_info);
     close(Sock_fd);
     OUT("Free Net_info and close Sock_fd");
-    OUT("Destructor");
+    OUT_DBG("Destructor");
 }
 
 void Server::run()

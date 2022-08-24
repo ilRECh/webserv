@@ -5,5 +5,5 @@
 class LocationBlock : public ABlock
 {
 public:
-    virtual ~LocationBlock() { OUT("Destructor"); };
+    virtual ~LocationBlock() { OUT_DBG("Destructor"); };
 };
