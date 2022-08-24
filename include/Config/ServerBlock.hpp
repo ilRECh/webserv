@@ -17,7 +17,6 @@ private:
     std::string Port;
     std::set<std::string> Server_name;
     int Client_body_size;
-    std::string Index_file;
     std::map<int, std::string> Error_pages;
     std::map<std::string, LocationBlock *> Locations;
 
