@@ -8,13 +8,14 @@ make_test_build() {
 }
 
 config_test() {
+    CONFIG_TEST_DIR=config/test/
     make_test_build test/config_test.cpp
-    for CONFIG in $(find config/test -type f)
+    for CONFIG in $(ls $CONFIG_TEST_DIR | sort -n)
     do
         echo
-        echo "===>TESTING CONFIG: $CONFIG<==="
+        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR$CONFIG<==="
         echo
-        ./webserv $CONFIG
+        ./webserv $CONFIG_TEST_DIR$CONFIG
         echo
         echo "========>DONE TESTING<========="
         echo
