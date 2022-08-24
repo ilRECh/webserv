@@ -46,7 +46,7 @@ void Config::read_file()
                 throw;
             }
 
-            //if (Instances.find() != Instances.end())
+            //if (Instances.find(block.get_host() + ":" + block.get_port()) != Instances.end())
             //{
             //    Instances.insert(make_pair(block.get_host() + ":" + block.get_port(), block));
             //}

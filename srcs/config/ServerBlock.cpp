@@ -57,40 +57,55 @@ ServerBlock::~ServerBlock()
 
 void ServerBlock::parse_listen(std::string value)
 {
-    const char * msg = "Invalid host:port value of the listen parameter";
-    std::string host;
-    std::string port;
-    size_t delimiter_pos = value.find(':');
-
-    if (delimiter_pos != value.npos)
+    if (Host.empty() and Port.empty())
     {
-        if (delimiter_pos != value.rfind(':'))
+        const char * msg = "Invalid host:port value of the listen parameter";
+        std::string host;
+        std::string port;
+        size_t delimiter_pos = value.find(':');
+
+        if (delimiter_pos != value.npos)
         {
-            throw ERR(msg);
+            if (delimiter_pos != value.rfind(':'))
+            {
+                throw ERR(msg);
+            }
+
+            host = value.substr(0, delimiter_pos);
+
+            if (host.empty())
+            {
+                host = "127.0.0.1";
+            }
+
+            port = value.substr(delimiter_pos + 1, value.length());
         }
-
-        host = value.substr(0, delimiter_pos);
-
-        if (host.empty())
+        else
         {
             host = "127.0.0.1";
+            port = value;
         }
 
-        port = value.substr(delimiter_pos + 1, value.length());
+        Host = host;
+        Port = port;
     }
-    else
-    {
-        host = "127.0.0.1";
-        port = value;
-    }
-
-    Host = host;
-    Port = port;
 }
 
 void ServerBlock::parse_server_name(std::string value)
 {
-    (void)value;
+    char * value_buf = new char[value.length() + 1];
+
+    strcpy(value_buf, value.c_str());
+
+    char * name = std::strtok(value_buf, " ");
+
+    while (name != NULL)
+    {
+        Server_name.insert(name);
+        name = std::strtok(NULL, " ");
+    }
+
+    delete value_buf;
 }
 
 void ServerBlock::parse_error_page(std::string value)
