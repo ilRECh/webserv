@@ -13,8 +13,6 @@ private:
     ServerBlock(ServerBlock &that);
     ServerBlock& operator=(ServerBlock &that);
 
-    // std::list<std::pair<std::string, std::mem_fun1_t<void, ServerBlock, std::string> > > parsers;
-
     std::string Host;
     std::string Port;
     std::set<std::string> Server_name;

@@ -84,50 +84,8 @@ void ServerBlock::parse_listen(std::string value)
         port = value;
     }
 
-    if (host != "127.0.0.1")
-    {
-        std::list<std::string> octets;
-        char * host_copy = new char[host.size() + 1];
-
-        strcpy(host_copy, host.c_str());
-
-        char * octet_copy = std::strtok(host_copy, ".");
-
-        while (octet_copy != NULL)
-        {
-            octets.push_back(octet_copy);
-            octet_copy = std::strtok(NULL, ".");
-        }
-
-        delete host_copy;
-
-        if (octets.size() != 4)
-        {
-            throw ERR(msg);
-        }
-
-        std::list<std::string>::iterator octet = octets.begin();
-        while (octet != octets.end())
-        {
-            int octet_num = std::atoi(octet->c_str());
-
-            if ((octet_num == 0 and *octet != "0") or
-                (0 > octet_num or octet_num > 255))
-            {
-                throw ERR(msg);
-            }
-        }
-    }
-
-    int port_num = std::atoi(port.c_str());
-
-    if (1024 > port_num or port_num > 65536)
-    {
-        throw ERR(msg);
-    }
-
-    // Host = host;
-    // Port = port;
+    Host = host;
+    Port = port;
 }
 
 void ServerBlock::parse_server_name(std::string value)

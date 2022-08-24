@@ -25,9 +25,9 @@ Server::Server(std::string const name ,
         throw ERR(gai_strerror(errno));
     }
 
-    if (1 > std::atoi(Port.c_str()) || std::atoi(Port.c_str()) > 65535)
+    if (1024 > std::atoi(Port.c_str()) || std::atoi(Port.c_str()) > 65535)
     {
-        throw ERR("port range [1,65535]");
+        throw ERR("port range [1024,65535]");
     }
 
     if ((Sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
