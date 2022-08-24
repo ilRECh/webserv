@@ -2,7 +2,7 @@
 
 #include <string>
 #include <fstream>
-#include <list>
+#include <vector>
 #include "logger.hpp"
 #include "Config.hpp"
 
@@ -38,11 +38,11 @@ protected:
         }
     };
 
-    std::list<ParamCallback> parsers;
+    std::vector<ParamCallback> parsers;
 
     void parse_and_validate_parameter(std::string parameter)
     {
-        typename std::list<ParamCallback>::iterator parser = parsers.begin();
+        typename std::vector<ParamCallback>::iterator parser = parsers.begin();
         while (parser != parsers.end())
         {
             size_t size = strlen(parser->param_name);

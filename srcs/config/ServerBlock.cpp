@@ -108,14 +108,53 @@ void ServerBlock::parse_server_name(std::string value)
     delete value_buf;
 }
 
-void ServerBlock::parse_error_page(std::string value)
+void ServerBlock::parse_error_page(std::string values)
 {
-    (void)value;
+    char * values_buf = new char[values.length() + 1];
+
+    strcpy(values_buf, values.c_str());
+
+    char * value = std::strtok(values_buf, " ");
+
+    if (value != NULL)
+    {
+        int error_num = std::atoi(value);
+
+        if (100 > error_num or error_num > 599)
+        {
+            OUT("Error code probably does not exist");
+        }
+
+        value = std::strtok(NULL, " ");
+
+        if (value != NULL)
+        {
+            std::string error_page_name(value);
+            std::ifstream error_page_file(error_page_name.c_str());
+
+            if (error_page_file.good())
+            {
+                error_page_file.close();
+
+                if (Error_pages.find(error_num) == Error_pages.end())
+                {
+                    Error_pages.insert(make_pair(error_num, error_page_name));
+                }
+            }
+        }
+    }
+
+    delete values_buf;
 }
 
 void ServerBlock::parse_client_body_size(std::string value)
 {
-    (void)value;
+    size_t client_body_size = std::atoi(value.c_str());
+
+    if (client_body_size > 0)
+    {
+        Client_body_size = client_body_size;
+    }
 }
 
 void ServerBlock::parse_location(std::string value)

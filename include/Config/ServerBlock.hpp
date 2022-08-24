@@ -22,7 +22,7 @@ private:
 
     void parse_listen(std::string value);
     void parse_server_name(std::string value);
-    void parse_error_page(std::string value);
+    void parse_error_page(std::string values);
     void parse_client_body_size(std::string value);
     void parse_index(std::string value);
     void parse_location(std::string value);
