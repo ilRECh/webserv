@@ -8,7 +8,7 @@ void Dispatcher::read_config(std::string config_file)
     try {
         config.read_file();
     } catch (std::exception &e) {
-        OUT(e.what());
+        OUT("Catched exception: " << e.what());
         throw ERR("Config invalid");
     }
 

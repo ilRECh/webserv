@@ -9,7 +9,7 @@ int main(int argc, char **argv)
             webserv.read_config(argv[1]);
             webserv.run();
         } catch (std::exception& e) {
-            OUT("Catched: " << e.what());
+            OUT("Catched exception: " << e.what());
         } catch (...) {
             OUT("Unknown catched");
         }

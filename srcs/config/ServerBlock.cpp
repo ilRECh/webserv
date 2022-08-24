@@ -39,7 +39,10 @@ ServerBlock::~ServerBlock()
 
 void ServerBlock::parse_listen(std::string value)
 {
-    (void)value;
+    if (value.find(':') == value.npos or value.find(':') != value.rfind(':'))
+    {
+        throw ERR("");
+    }
 }
 
 void ServerBlock::parse_server_name(std::string value)
@@ -69,5 +72,8 @@ void ServerBlock::parse_location(std::string value)
 
 void ServerBlock::validate()
 {
-
+    if (Host.empty() or Port.empty())
+    {
+        throw ERR("Host");
+    }
 }

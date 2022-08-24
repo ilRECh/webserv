@@ -17,19 +17,19 @@ std::string str(T arg)
 
 #define OUT(OUTPUT)                        \
 (std::cout << std::boolalpha               \
-           << '<' << __LINE__ << "><"      \
-                  << __FILE__ << "><"      \
+          << "< " << __FILE__ << ":"       \
+                  << __LINE__ << " ><"     \
                   << __func__ << ">\n--->" \
                   << OUTPUT << std::endl)
 
 #define NL "\n    "
 
 #define ERR(ERROR_MSG)                       \
-(std::runtime_error(                  "<" +  \
-                        ft::str(__LINE__) +  \
-                                     "><" +  \
+(std::runtime_error(                 "< " +  \
                     std::string(__FILE__) +  \
-                                     "><" +  \
+                                      ":" +  \
+                        ft::str(__LINE__) +  \
+                                    " ><" +  \
                     std::string(__func__) +  \
                                      "> " +  \
                                 ERROR_MSG))
