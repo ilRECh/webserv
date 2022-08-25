@@ -43,14 +43,14 @@ void ConfigFile::read_file()
                 block->parse_block();
                 block->validate();
 
-                //if (Instances.find(block.get_host() + ":" + block.get_port()) != Instances.end())
-                //{
+                // if (Instances.find(block.get_host() + ":" + block.get_port()) != Instances.end())
+                // {
                 //    Instances.insert(make_pair(block.get_host() + ":" + block.get_port(), block));
-                //}
-                //else
-                //{
+                // }
+                // else
+                // {
                 //    delete block;
-                //}
+                // }
             } catch (std::exception &e) {
                 OUT("Catched from Server block: " << e.what());
                 delete block;
