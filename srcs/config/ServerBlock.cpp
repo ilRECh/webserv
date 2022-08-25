@@ -14,7 +14,8 @@
  * 
  */
 ServerBlock::ServerBlock(ConfigFile & config)
-    :   ABlock(config), Client_body_size(0)
+    :   ABlock(config),
+        AServer()
 {
     //host:port
     parsers.push_back(
@@ -101,7 +102,7 @@ void ServerBlock::parse_server_name(std::string value)
 
     while (name != NULL)
     {
-        Server_name.insert(name);
+        Server_names.insert(name);
         name = std::strtok(NULL, " ");
     }
 

@@ -2,11 +2,9 @@
 #include "Connection.hpp"
 
 Server::Server(std::string const name ,
-               std::string const ip   ,
+               std::string const host ,
                std::string const port)
-    :   Name(name),
-        Ip(ip),
-        Port(port),
+    :   AServer(name, host, port),
         Net_info(0),
         Sock_len(0),
         Fd_set(),
@@ -20,7 +18,7 @@ Server::Server(std::string const name ,
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags    = AI_PASSIVE;
 
-    if (getaddrinfo(Ip.c_str(), Port.c_str(), &hints, &Net_info))
+    if (getaddrinfo(Host.c_str(), Port.c_str(), &hints, &Net_info))
     {
         throw ERR(gai_strerror(errno));
     }
@@ -52,10 +50,15 @@ Server::Server(std::string const name ,
         throw ERR(strerror(errno));
     }
 
-    OUT("Server name: " << Name << NL
-        << "Server IP  : " << Ip   << NL
-        << "Server port: " << Port << NL
-        << "Server sock: " << Sock_fd);
+    std::set<std::string>::iterator name_iter = Server_names.begin();
+    while (name_iter != Server_names.end())
+    {
+        OUT("Server name: " << *name_iter << NL);
+    }
+
+    OUT(   "Server Host:   " << Host   << NL
+        << "Server Port:   " << Port << NL
+        << "Server Socket: " << Sock_fd);
 
     Max_fd = Sock_fd;
 

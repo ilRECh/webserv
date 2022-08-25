@@ -24,8 +24,8 @@ const char * LocationBlock::Possible_allow_methods_setup[] =
  */
 LocationBlock::LocationBlock(ConfigFile & config)
     :   ABlock(config),
-        Possible_allow_methods(Possible_allow_methods_setup, Possible_allow_methods_setup + (sizeof(Possible_allow_methods_setup) / sizeof(const char *))),
-        Autoindex(-1)
+        ALocation(),
+        Possible_allow_methods(Possible_allow_methods_setup, Possible_allow_methods_setup + (sizeof(Possible_allow_methods_setup) / sizeof(const char *)))
 {
     //method_name [method_name [method_name]]
     parsers.push_back(

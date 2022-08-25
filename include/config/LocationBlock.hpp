@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ABlock.hpp"
+#include "ALocation.hpp"
 #include <set>
 #include <map>
 
 class ConfigFile;
 
-class LocationBlock : public ABlock<LocationBlock>
+class LocationBlock : public ABlock<LocationBlock>, public ALocation
 {
 private:
     LocationBlock(LocationBlock &that);
@@ -14,15 +15,6 @@ private:
 
     static const char * Possible_allow_methods_setup [];
     std::vector<std::string> Possible_allow_methods;
-
-    int Autoindex;
-    std::string Return; //Redirection parameter
-    std::set<std::string> Allow_methods;
-    std::string Root;
-    std::string Index;
-    std::string FastCGI_path;
-    std::string Upload_pass; //URL, where the uploading starts
-    std::string Upload_store; //Path, where to store uploaded files
 
     void parse_allow_methods(std::string values);
     void parse_root(std::string value);
