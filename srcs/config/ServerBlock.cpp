@@ -87,6 +87,13 @@ void ServerBlock::parse_listen(std::string value)
             port = value;
         }
 
+        int port_num = std::atoi(port.c_str());
+
+        if (1024 > port_num or port_num > 65535)
+        {
+            throw ERR(msg);
+        }
+
         Host = host;
         Port = port;
     }

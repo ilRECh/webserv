@@ -28,5 +28,7 @@ public:
         Server_names.insert(name);
     }
 
+    std::string get_host_port() const { return Host + ":" + Port; } ;
+
     virtual ~AServer() {} ;
 };
