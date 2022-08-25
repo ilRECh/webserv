@@ -193,11 +193,14 @@ void LocationBlock::parse_upload_store(std::string value)
 
 void LocationBlock::validate()
 {
-    if (Allow_methods.empty() or
-        Root.empty()          or
-        Index.empty()         or
-        Autoindex == -1       or
-        Return.empty())
+    if (Allow_methods.empty() and
+        Root.empty()          and
+        Index.empty()         and
+        Autoindex == -1       and
+        Return.empty()        and
+        FastCGI_path.empty()  and
+        Upload_pass.empty()   and
+        Upload_store.empty())
     {
         throw ERR("Invalid location block");
     }
