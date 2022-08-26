@@ -3,7 +3,6 @@
 #include "logger.hpp"
 #include "Server.hpp"
 #include <fstream>
-#include <map>
 #include <vector>
 
 class ServerBlock;
@@ -16,7 +15,14 @@ private:
     ConfigFile &operator=(ConfigFile& that);
 
     std::ifstream Config_file;
-    std::map<std::string, ServerBlock *> Instances;
+    std::vector<ServerBlock *> Instances;
+
+    enum BlockProperty
+    {
+        INSTANCE_IS_DEFAULT ,
+        REGULAR_INSTANCE    ,
+        DUPLICATE
+    };
 
 public:
     ConfigFile(std::string const path_to_config_file);
@@ -25,5 +31,6 @@ public:
     bool good();
     void read_file();
     std::string getline_trimmed();
+    BlockProperty find_duplicates_in(std::vector<ServerBlock *> & instances, ServerBlock & block);
     std::vector<Server *> get_servers();
 };

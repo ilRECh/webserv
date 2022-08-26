@@ -16,10 +16,10 @@ ConfigFile::~ConfigFile()
 {
     Config_file.close();
 
-    std::map<std::string, ServerBlock *>::iterator instance = Instances.begin();
+    std::vector<ServerBlock *>::iterator instance = Instances.begin();
     while (instance != Instances.end())
     {
-        delete instance->second;
+        delete (*instance);
         ++instance;
     }
 
@@ -43,14 +43,28 @@ void ConfigFile::read_file()
                 block->parse_block();
                 block->validate();
 #if 0
-                if (Instances.find(block->get_first_name()) == Instances.end())
+                switch (find_duplicates_in(Instances, *block))
                 {
-                   Instances.insert(make_pair(block->get_first_name(), block));
+                    case INSTANCE_IS_DEFAULT:
+                        block->mark_default();
+                        Instances.push_back(block);
+                        break;
+                    case REGULAR_INSTANCE:
+                        Instances.push_back(block);
+                        break;
+                    case DUPLICATE:
+                        delete block;
+                    default:
+                        break;
                 }
-                else
-                {
-                   delete block;
-                }
+                // if ((block->get_first_name()) == Instances.end())
+                // {
+                //    Instances.insert(make_pair(block->get_first_name(), block));
+                // }
+                // else
+                // {
+                //    delete block;
+                // }
 #else
 delete block;
 #endif
@@ -90,6 +104,26 @@ std::string ConfigFile::getline_trimmed()
     return line;
 }
 
+ConfigFile::BlockProperty ConfigFile::find_duplicates_in(std::vector<ServerBlock *> & instances,
+                                                         ServerBlock & block)
+{
+    addrinfo hints;
+    memset(&hints, 0, sizeof hints);
+    
+    hints.ai_family   = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE;
+
+    (void)block;
+    std::vector<ServerBlock *>::iterator instance = instances.begin();
+    while (instance != instances.end())
+    {
+
+    }
+
+    return INSTANCE_IS_DEFAULT;
+}
+
 std::vector<Server *> ConfigFile::get_servers()
 {
     if (not Instances.empty())
@@ -97,10 +131,10 @@ std::vector<Server *> ConfigFile::get_servers()
         std::vector<Server *> servers;
         servers.reserve(Instances.size());
 
-        std::map<std::string, ServerBlock *>::iterator server = Instances.begin();
+        std::vector<ServerBlock *>::iterator server = Instances.begin();
         while (server != Instances.end())
         {
-            Server * new_server = new Server(*(server->second));
+            Server * new_server = new Server(**server);
 
             servers.push_back(new_server);
 
