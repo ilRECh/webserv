@@ -3,19 +3,35 @@
 
 void Dispatcher::read_config(std::string config_file)
 {
+    char const * err_msg = "Config invalid";
     ConfigFile config(config_file);
 
     try {
         config.read_file();
     } catch (std::exception &e) {
         OUT("Catched exception: " << e.what());
-        throw ERR("Config invalid");
+        throw ERR(err_msg);
     }
 
-    // config.get_servers();
+    Servers = config.get_servers();
+
+    if (Servers.empty())
+    {
+        throw ERR(err_msg);
+    }
 }
 
 void Dispatcher::run()
 {
-    
+    try {
+        dispatch();
+    } catch (std::exception &e) {
+        OUT("Catched exception: " << e.what());
+        throw ERR("Failed to dispatch a Server");
+    }
+
+    while (true)
+    {
+        
+    }
 }

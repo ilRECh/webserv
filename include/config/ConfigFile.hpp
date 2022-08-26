@@ -4,6 +4,7 @@
 #include "Server.hpp"
 #include <fstream>
 #include <map>
+#include <vector>
 
 class ServerBlock;
 
@@ -16,7 +17,6 @@ private:
 
     std::ifstream Config_file;
     std::map<std::string, ServerBlock *> Instances;
-    static const char * location_params[];
 
 public:
     ConfigFile(std::string const path_to_config_file);
@@ -25,4 +25,5 @@ public:
     bool good();
     void read_file();
     std::string getline_trimmed();
+    std::vector<Server *> get_servers();
 };

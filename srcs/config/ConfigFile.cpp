@@ -86,3 +86,25 @@ std::string ConfigFile::getline_trimmed()
 
     return line;
 }
+
+std::vector<Server *> ConfigFile::get_servers()
+{
+    if (not Instances.empty())
+    {
+        std::vector<Server *> servers(Instances.size(), NULL);
+
+        std::map<std::string, ServerBlock *>::iterator server = Instances.begin();
+        while (server != Instances.end())
+        {
+            Server * new_server = new Server(*(server->second));
+            
+            servers.push_back(new_server);
+
+            ++server;
+        }
+
+        return servers; 
+    }
+
+    return std::vector<Server *>();
+}
