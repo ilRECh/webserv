@@ -97,6 +97,7 @@ void Server::init()
     while (name_iter != Server_names.end())
     {
         OUT("Server name: " << *name_iter << NL);
+        ++name_iter;
     }
 
     OUT(   "Server Host:   " << Host   << NL

@@ -52,6 +52,7 @@ void Dispatcher::run()
         while (server != Servers.end())
         {
             (*server)->run();
+            ++server;
         }
     }
 }
