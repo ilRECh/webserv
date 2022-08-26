@@ -8,14 +8,33 @@ make_test_build() {
 }
 
 config_test() {
-    CONFIG_TEST_DIR=config/test/
+    CONFIG_TEST_DIR_BAD=config/test/bad
+    CONFIG_TEST_DIR_GOOD=config/test/good
     make_test_build test/config_test.cpp
-    for CONFIG in $(ls $CONFIG_TEST_DIR | sort -n)
+
+    echo "++++++++++++++++++++++++++++++"
+    echo "=======>Testing good<========="
+    echo "++++++++++++++++++++++++++++++"
+    for CONFIG in $(ls $CONFIG_TEST_DIR_GODD | sort -n)
     do
         echo
-        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR$CONFIG<==="
+        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_GOOD$CONFIG<==="
         echo
-        ./webserv $CONFIG_TEST_DIR$CONFIG
+        ./webserv $CONFIG_TEST_DIR_GOOD$CONFIG
+        echo
+        echo "========>DONE TESTING<========="
+        echo
+    done
+
+    echo "++++++++++++++++++++++++++++++"
+    echo "=======>Testing bad<========="
+    echo "++++++++++++++++++++++++++++++"
+    for CONFIG in $(ls $CONFIG_TEST_DIR_BAD | sort -n)
+    do
+        echo
+        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_BAD$CONFIG<==="
+        echo
+        ./webserv $CONFIG_TEST_DIR_BAD$CONFIG
         echo
         echo "========>DONE TESTING<========="
         echo
@@ -32,5 +51,22 @@ server_test() {
     kill -9 $EXEC_PID
 }
 
+dispatcher_test() {
+    EXEC=./webserv
+    CONF=./config/test/multiple_ports.conf
+    PORT_1=7777
+    PORT_2=8888
+    PORT_3=9999
+
+    make fclean ; make debug
+    $EXEC $CONF & EXEC_PID=$!
+    send_to_server "Hello first!" 1 $PORT_1 &
+    send_to_server "Hello second!" 1 $PORT_2 &
+    send_to_server "Hello third!" 1 $PORT_3 &
+    sleep 3
+    kill -9 $EXEC_PID
+}
+
+# config_test
 # server_test
-config_test
+dispatcher_test
