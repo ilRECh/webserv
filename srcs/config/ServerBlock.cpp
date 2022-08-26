@@ -22,6 +22,7 @@ ServerBlock::ServerBlock(ConfigFile & config)
         ABlock::ParamCallback("listen " , std::mem_fun(&ServerBlock::parse_listen), this)
     );
 
+    //https://nginx.org/ru/docs/http/request_processing.html
     //name [name [name] ...]
     parsers.push_back(
         ABlock::ParamCallback("server_name "  , std::mem_fun(&ServerBlock::parse_server_name), this)
@@ -102,19 +103,27 @@ void ServerBlock::parse_listen(std::string value)
 
 void ServerBlock::parse_server_name(std::string value)
 {
-    char * value_buf = new char[value.length() + 1];
-
-    strcpy(value_buf, value.c_str());
-
-    char * name = std::strtok(value_buf, " ");
-
-    while (name != NULL)
+    if (Server_names.empty())
     {
-        Server_names.insert(name);
-        name = std::strtok(NULL, " ");
-    }
+        char * value_buf = new char[value.length() + 1];
 
-    delete value_buf;
+        strcpy(value_buf, value.c_str());
+
+        char * name = std::strtok(value_buf, " ");
+
+        if (Default_server_name.empty())
+        {
+            Default_server_name = name;
+        }
+
+        while (name != NULL)
+        {
+            Server_names.insert(name);
+            name = std::strtok(NULL, " ");
+        }
+
+        delete value_buf;
+    }
 }
 
 void ServerBlock::parse_error_page(std::string values)

@@ -43,9 +43,9 @@ void ConfigFile::read_file()
                 block->parse_block();
                 block->validate();
 
-                if (Instances.find(block->get_host_port()) == Instances.end())
+                if (Instances.find(block->get_first_name()) == Instances.end())
                 {
-                   Instances.insert(make_pair(block->get_host_port(), block));
+                   Instances.insert(make_pair(block->get_first_name(), block));
                 }
                 else
                 {

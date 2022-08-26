@@ -18,7 +18,10 @@ protected:
     size_t Client_body_size;
     std::string Host;
     std::string Port;
+
+    std::string Default_server_name;
     std::set<std::string> Server_names;
+    
     std::map<int, std::string> Error_pages;
     std::map<std::string, ALocation *> Locations;
 
@@ -39,11 +42,12 @@ public:
         :   Client_body_size(that.Client_body_size),
             Host(that.Host),
             Port(that.Port),
+            Default_server_name(that.Default_server_name),
             Server_names(that.Server_names),
             Error_pages(that.Error_pages)
     {} ;
 
-    std::string get_host_port() const { return Host + ":" + Port; } ;
+    std::string get_first_name() const { return Default_server_name; } ;
 
     virtual ~AServer() {} ;
 };
