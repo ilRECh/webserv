@@ -27,6 +27,6 @@ private:
 
 public:
     LocationBlock(ConfigFile & config);
+    virtual ~LocationBlock(); //override
     virtual void validate(); //override
-    virtual ~LocationBlock() { OUT_DBG("Destructor"); }; //override
 };

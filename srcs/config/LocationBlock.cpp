@@ -70,6 +70,11 @@ LocationBlock::LocationBlock(ConfigFile & config)
     OUT_DBG("Constructor");
 }
 
+LocationBlock::~LocationBlock()
+{
+    OUT_DBG("Destructor");
+}
+
 void LocationBlock::parse_allow_methods(std::string values)
 {
     if (Allow_methods.empty())

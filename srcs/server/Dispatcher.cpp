@@ -1,9 +1,34 @@
 #include "Dispatcher.hpp"
 #include "ConfigFile.hpp"
+#include <csignal>
+
+bool Dispatcher::Keep_alive = true;
+bool Dispatcher::Signal_overrided = false;
+
+void Dispatcher::sighandler(int)
+{
+    Dispatcher::Signal_overrided = false;
+    Dispatcher::Keep_alive = false;
+    std::signal(SIGINT, SIG_DFL);
+}
+
+void Dispatcher::signal_override()
+{
+    if (not Dispatcher::Signal_overrided)
+    {
+        if (std::signal(SIGINT, Dispatcher::sighandler) == SIG_ERR)
+        {
+            throw ERR("Signal override failure");
+        }
+
+        Dispatcher::Signal_overrided = true;
+    }
+}
 
 Dispatcher::Dispatcher()
 {
-
+    Dispatcher::signal_override();
+    OUT_DBG("Constructor");
 }
 
 Dispatcher::~Dispatcher()
@@ -14,6 +39,7 @@ Dispatcher::~Dispatcher()
         delete (*server);
         ++server;
     }
+    OUT_DBG("Destructor");
 }
 
 void Dispatcher::read_config(std::string config_file)
@@ -46,7 +72,7 @@ void Dispatcher::run()
     }
 
     std::vector<Server *>::iterator server;
-    while (true)
+    while (Keep_alive)
     {
         server = Servers.begin();
         while (server != Servers.end())

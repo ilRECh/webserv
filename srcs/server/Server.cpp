@@ -31,6 +31,7 @@ Server::Server(AServer & block)
 
         ++location;
     }
+    OUT_DBG("Constructor");
 }
 
 Server::~Server()
@@ -43,12 +44,19 @@ Server::~Server()
         ++conn;
     }
 
+    std::map<std::string, ALocation *>::iterator location = Locations.begin();
+    while (location != Locations.end())
+    {
+        delete location->second;
+        ++location;
+    }
+
     FD_ZERO(&Write_set);
     FD_ZERO(&Read_set);
     FD_ZERO(&Fd_set);
     freeaddrinfo(Net_info);
     close(Sock_fd);
-    OUT("Free Net_info and close Sock_fd");
+    OUT_DBG("Free Net_info and close Sock_fd");
     OUT_DBG("Destructor");
 }
 
@@ -100,7 +108,7 @@ void Server::init()
         ++name_iter;
     }
 
-    OUT(   "Server Host:   " << Host   << NL
+    OUT(   "Server Host:   " << Host << NL
         << "Server Port:   " << Port << NL
         << "Server Socket: " << Sock_fd);
 
@@ -174,8 +182,8 @@ void Server::scan_dead()
                 FD_CLR((*conn)->fd, &Write_set);
                 FD_CLR((*conn)->fd, &Read_set);
                 FD_CLR((*conn)->fd, &Fd_set);
-                OUT("Erased from all fd sets: " << (*conn)->fd);
                 delete (*conn);
+                OUT("Connection closed: " << (*conn)->fd);
                 conn = Accepted_conns.erase(conn);
             }
         }
@@ -199,8 +207,9 @@ void Server::receive()
 
             if (received > 0)
             {
-                (*conn)->set_accepted_msg(accepted_buff);
-                OUT("Message received");
+                (*conn)->accepted_msg += accepted_buff;
+                OUT_DBG(Connection::log_out_with_symbols((*conn)->accepted_msg.c_str()));
+                OUT("Message received from: " << (*conn)->fd);
             }
 
         }
@@ -215,11 +224,17 @@ void Server::prepare_reply()
 
     while (conn != Accepted_conns.end())
     {
-        if (not (*conn)->get_accepted_msg().empty())
+        if (not (*conn)->accepted_msg.empty())
         {
-            (*conn)->set_reply_msg("\nAccepted from Server: General Kenobi\n\n");
-            (*conn)->set_accepted_msg("");
-            OUT("Reply prepared");
+            // RequestResponse handler(*this);
+
+            // if (handler->request((*conn)->get_accepted_msg()))
+            // {
+            //     (*conn)->set_reply_msg(handler->responce());
+                (*conn)->accepted_msg.clear();
+            // }
+            (*conn)->reply_msg = "\nAccepted from Server: General Kenobi\n\n";
+            OUT("Reply prepared for: " << (*conn)->fd);
         }
 
         ++conn;
@@ -236,11 +251,11 @@ void Server::reply()
         {
             FD_CLR((*conn)->fd, &Write_set);
 
-            if (not (*conn)->get_reply_msg().empty())
+            if (not (*conn)->reply_msg.empty())
             {
-                send((*conn)->fd, (*conn)->get_reply_msg().c_str(), (*conn)->get_reply_msg().length(), 0);
-                (*conn)->set_reply_msg("");
-                OUT("Reply sent");
+                send((*conn)->fd, (*conn)->reply_msg.c_str(), (*conn)->reply_msg.length(), 0);
+                (*conn)->reply_msg = "";
+                OUT("Reply sent to: " << (*conn)->fd);
             }
         }
 

@@ -14,7 +14,13 @@ private:
 
     std::vector<Server *> Servers;
 
+    static bool Keep_alive;
+    static bool Signal_overrided;
+    static void sighandler(int s);
+    static void signal_override();
+
     void dispatch();
+
 public:
     Dispatcher();
     ~Dispatcher();

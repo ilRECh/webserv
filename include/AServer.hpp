@@ -1,9 +1,10 @@
 #pragma once
 
-#include "default.hpp"
 #include <string>
 #include <set>
 #include <map>
+
+#define DEFAULT_CLIENT_BODY_SIZE 1000
 
 class ALocation;
 class Server;
@@ -27,19 +28,11 @@ public:
             std::string port)
         :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE),
             Host(host),
-            Port(port),
-            Server_names(DEFAULT_SERVER_NAMES),
-            Error_pages(DEFAULT_ERROR_PAGES),
-            Locations(DEFAULT_LOCATIONS)
+            Port(port)
     {} ;
 
     AServer()
-        :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE),
-            Host(DEFAULT_HOST),
-            Port(DEFAULT_PORT),
-            Server_names(DEFAULT_SERVER_NAMES),
-            Error_pages(DEFAULT_ERROR_PAGES),
-            Locations(DEFAULT_LOCATIONS)
+        :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
     {} ;
 
     AServer(AServer & that)

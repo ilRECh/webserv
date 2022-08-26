@@ -5,6 +5,9 @@
 #include <cstring>
 #include <unistd.h>
 
+class Server;
+class RequestResponse;
+
 class Connection
 {
 private:
@@ -15,14 +18,13 @@ private:
     std::string accepted_msg;
     std::string reply_msg;
 
+    static std::string log_out_with_symbols(char const * to_print);
+
+    friend class Server;
+    friend class RequestResponse;
 public:
     int const fd;
 
     Connection(int const fd);
     ~Connection();
-
-    void set_accepted_msg(char const * _accepted_msg);
-    std::string const & get_accepted_msg() const ;
-    void set_reply_msg(std::string _reply_msg);
-    std::string const & get_reply_msg() const ;
 };
