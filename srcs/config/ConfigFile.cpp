@@ -42,7 +42,7 @@ void ConfigFile::read_file()
             try {
                 block->parse_block();
                 block->validate();
-
+#if 0
                 if (Instances.find(block->get_first_name()) == Instances.end())
                 {
                    Instances.insert(make_pair(block->get_first_name(), block));
@@ -51,6 +51,9 @@ void ConfigFile::read_file()
                 {
                    delete block;
                 }
+#else
+delete block;
+#endif
             } catch (std::exception &e) {
                 OUT("Catched from Server block: " << e.what());
                 delete block;
