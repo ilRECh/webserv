@@ -111,11 +111,6 @@ void ServerBlock::parse_server_name(std::string value)
 
         char * name = std::strtok(value_buf, " ");
 
-        if (Default_server_name.empty())
-        {
-            Default_server_name = name;
-        }
-
         while (name != NULL)
         {
             Server_names.insert(name);

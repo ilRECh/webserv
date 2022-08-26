@@ -69,14 +69,14 @@ void Server::init()
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags    = AI_PASSIVE;
 
-    if (getaddrinfo(Host.c_str(), Port.c_str(), &hints, &Net_info))
-    {
-        throw ERR(gai_strerror(errno));
-    }
-
     if (1024 > std::atoi(Port.c_str()) or std::atoi(Port.c_str()) > 65535)
     {
         throw ERR("port range [1024,65535]");
+    }
+
+    if (getaddrinfo(Host.c_str(), Port.c_str(), &hints, &Net_info))
+    {
+        throw ERR(gai_strerror(errno));
     }
 
     if ((Sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
