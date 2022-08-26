@@ -16,7 +16,12 @@ Server::Server(std::string const host ,
 }
 
 Server::Server(AServer & block)
-    :   AServer(block)
+    :   AServer(block),
+        Net_info(0),
+        Sock_len(0),
+        Fd_set(),
+        Sock_fd(0),
+        Max_fd(0)
 {
     std::map<std::string, ALocation *>::iterator location = block.Locations.begin();
     while (location != block.Locations.end())
@@ -26,6 +31,25 @@ Server::Server(AServer & block)
 
         ++location;
     }
+}
+
+Server::~Server()
+{
+    std::list<Connection *>::iterator conn = Accepted_conns.begin();
+
+    while (conn != Accepted_conns.end())
+    {
+        delete (*conn);
+        ++conn;
+    }
+
+    FD_ZERO(&Write_set);
+    FD_ZERO(&Read_set);
+    FD_ZERO(&Fd_set);
+    freeaddrinfo(Net_info);
+    close(Sock_fd);
+    OUT("Free Net_info and close Sock_fd");
+    OUT_DBG("Destructor");
 }
 
 void Server::init()
@@ -85,25 +109,6 @@ void Server::init()
     FD_ZERO(&Read_set);
     FD_ZERO(&Fd_set);
     FD_SET(Sock_fd, &Fd_set);
-}
-
-Server::~Server()
-{
-    std::list<Connection *>::iterator conn = Accepted_conns.begin();
-
-    while (conn != Accepted_conns.end())
-    {
-        delete (*conn);
-        ++conn;
-    }
-
-    FD_ZERO(&Write_set);
-    FD_ZERO(&Read_set);
-    FD_ZERO(&Fd_set);
-    freeaddrinfo(Net_info);
-    close(Sock_fd);
-    OUT("Free Net_info and close Sock_fd");
-    OUT_DBG("Destructor");
 }
 
 void Server::run()

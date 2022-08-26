@@ -91,7 +91,8 @@ std::vector<Server *> ConfigFile::get_servers()
 {
     if (not Instances.empty())
     {
-        std::vector<Server *> servers(Instances.size(), NULL);
+        std::vector<Server *> servers;
+        servers.reserve(Instances.size());
 
         std::map<std::string, ServerBlock *>::iterator server = Instances.begin();
         while (server != Instances.end())
