@@ -89,8 +89,8 @@ void Server::init()
         throw ERR(strerror(errno));
     }
 
-	Sock_len = sizeof(sockaddr);
-	
+    Sock_len = sizeof(sockaddr);
+
     if (bind(Sock_fd, Net_info->ai_addr, Sock_len))
     {
         throw ERR(strerror(errno));
@@ -132,10 +132,10 @@ void Server::run()
 
 void Server::scan_events()
 {
-	timeval tm = {0, 1000};
+    timeval tm = {0, 1000};
     
     Write_set = Read_set = Fd_set;
-	
+    
     if (select(Max_fd + 1, &Read_set, &Write_set, NULL, &tm) < 0)
     {
         throw ERR(strerror(errno));
@@ -156,7 +156,7 @@ void Server::accept_incomers()
         fcntl(incomer, F_SETFD, O_NONBLOCK);
         Accepted_conns.push_back(new Connection(incomer));
         FD_SET(incomer, &Fd_set);
-    	sockaddr_in incomer_addr;
+        sockaddr_in incomer_addr;
         socklen_t incomer_socklen = sizeof(incomer_addr);
         getpeername(incomer, (sockaddr *)&incomer_addr, &incomer_socklen);
         OUT("New connection: " << inet_ntoa(incomer_addr.sin_addr)

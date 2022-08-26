@@ -5,7 +5,7 @@ int main(int argc, char **argv)
     if (argc == 2)
     {
         try {
-            Server server("ilRECh serv", "localhost", argv[1]);
+            Server server("localhost", argv[1]);
 
             while (true)
             {

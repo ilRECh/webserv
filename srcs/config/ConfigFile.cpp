@@ -118,7 +118,7 @@ ConfigFile::BlockProperty ConfigFile::find_duplicates_in(std::vector<ServerBlock
     std::vector<ServerBlock *>::iterator instance = instances.begin();
     while (instance != instances.end())
     {
-
+//TODO: getaddrinfo comparing, then compare sets
     }
 
     return INSTANCE_IS_DEFAULT;
