@@ -41,12 +41,13 @@ ServerBlock::ServerBlock(ConfigFile & config)
     parsers.push_back(
         ABlock::ParamCallback("location " , std::mem_fun(&ServerBlock::parse_location), this)
     );
+
     OUT_DBG("Constructor");
 }
 
 ServerBlock::~ServerBlock()
 {
-    std::map<std::string, LocationBlock *>::iterator location = Locations.begin();
+    std::map<std::string, ALocation *>::iterator location = Locations.begin();
     while (location != Locations.end())
     {
         delete location->second;

@@ -46,6 +46,8 @@ private:
     int        Sock_fd;
     int        Max_fd;
 
+    bool       Is_inited;
+
     std::list<Connection *> Accepted_conns;
 
     void scan_events();
@@ -56,10 +58,10 @@ private:
     void scan_dead();
 
 public:
-    Server(std::string const name ,
-           std::string const host ,
+    Server(std::string const host ,
            std::string const port);
-    Server(ServerBlock & block);
+    Server(AServer & block);
     ~Server();
+    void init();
     void run();
 };

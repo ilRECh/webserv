@@ -1,15 +1,34 @@
 #include "Server.hpp"
 #include "Connection.hpp"
+#include "ServerBlock.hpp"
+#include "Location.hpp"
 
-Server::Server(std::string const name ,
-               std::string const host ,
+Server::Server(std::string const host ,
                std::string const port)
-    :   AServer(name, host, port),
+    :   AServer(host, port),
         Net_info(0),
         Sock_len(0),
         Fd_set(),
         Sock_fd(0),
         Max_fd(0)
+{
+    OUT_DBG("Constructor");
+}
+
+Server::Server(AServer & block)
+    :   AServer(block)
+{
+    std::map<std::string, ALocation *>::iterator location = block.Locations.begin();
+    while (location != block.Locations.end())
+    {
+        ALocation * new_location = new Location(*(location->second));
+        Locations.insert(make_pair(location->first, new_location));
+
+        ++location;
+    }
+}
+
+void Server::init()
 {
     addrinfo hints;
     memset(&hints, 0, sizeof hints);

@@ -1,6 +1,21 @@
 #include "Dispatcher.hpp"
 #include "ConfigFile.hpp"
 
+Dispatcher::Dispatcher()
+{
+
+}
+
+Dispatcher::~Dispatcher()
+{
+    std::vector<Server *>::iterator server = Servers.begin();
+    while (server != Servers.end())
+    {
+        delete (*server);
+        ++server;
+    }
+}
+
 void Dispatcher::read_config(std::string config_file)
 {
     char const * err_msg = "Config invalid";
@@ -30,8 +45,23 @@ void Dispatcher::run()
         throw ERR("Failed to dispatch a Server");
     }
 
+    std::vector<Server *>::iterator server;
     while (true)
     {
-        
+        server = Servers.begin();
+        while (server != Servers.end())
+        {
+            (*server)->run();
+        }
+    }
+}
+
+void Dispatcher::dispatch()
+{
+    std::vector<Server *>::iterator server = Servers.begin();
+    while (server != Servers.end())
+    {
+        (*server)->init();
+        ++server;
     }
 }

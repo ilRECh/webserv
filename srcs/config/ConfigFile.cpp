@@ -43,7 +43,7 @@ void ConfigFile::read_file()
                 block->parse_block();
                 block->validate();
 
-                if (Instances.find(block->get_host_port()) != Instances.end())
+                if (Instances.find(block->get_host_port()) == Instances.end())
                 {
                    Instances.insert(make_pair(block->get_host_port(), block));
                 }
@@ -97,7 +97,7 @@ std::vector<Server *> ConfigFile::get_servers()
         while (server != Instances.end())
         {
             Server * new_server = new Server(*(server->second));
-            
+
             servers.push_back(new_server);
 
             ++server;
