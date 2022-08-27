@@ -1,3 +1,5 @@
+#!/bin/bash
+
 send_to_server() {
     echo $1 | nc -w $2 localhost $3
 }
@@ -8,37 +10,45 @@ make_test_build() {
 }
 
 config_test() {
-    CONFIG_TEST_DIR_BAD=config/test/bad
-    CONFIG_TEST_DIR_GOOD=config/test/good
-    make_test_build test/config_test.cpp
+    if [ -z "$1" ]
+    then
+        CONFIG_TEST_DIR_BAD=config/test/bad
+        CONFIG_TEST_DIR_GOOD=config/test/good
+        make_test_build test/config_test.cpp
 
-    echo "++++++++++++++++++++++++++++++"
-    echo "=======>Testing good<========="
-    echo "++++++++++++++++++++++++++++++"
-    for CONFIG in $(ls $CONFIG_TEST_DIR_GODD | sort -n)
-    do
-        echo
-        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_GOOD$CONFIG<==="
-        echo
-        ./webserv $CONFIG_TEST_DIR_GOOD$CONFIG
-        echo
-        echo "========>DONE TESTING<========="
-        echo
-    done
+        echo "++++++++++++++++++++++++++++++"
+        echo "=======>Testing good<========="
+        echo "++++++++++++++++++++++++++++++"
+        for CONFIG in $(ls $CONFIG_TEST_DIR_GODD | sort -n)
+        do
+            echo
+            echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_GOOD$CONFIG<==="
+            echo
+            ./webserv $CONFIG_TEST_DIR_GOOD$CONFIG
+            echo
+            echo "========>DONE TESTING<========="
+            echo
+        done
 
-    echo "++++++++++++++++++++++++++++++"
-    echo "=======>Testing bad<========="
-    echo "++++++++++++++++++++++++++++++"
-    for CONFIG in $(ls $CONFIG_TEST_DIR_BAD | sort -n)
-    do
-        echo
-        echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_BAD$CONFIG<==="
-        echo
-        ./webserv $CONFIG_TEST_DIR_BAD$CONFIG
-        echo
-        echo "========>DONE TESTING<========="
-        echo
-    done
+        echo "++++++++++++++++++++++++++++++"
+        echo "=======>Testing bad<========="
+        echo "++++++++++++++++++++++++++++++"
+        for CONFIG in $(ls $CONFIG_TEST_DIR_BAD | sort -n)
+        do
+            echo
+            echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_BAD$CONFIG<==="
+            echo
+            ./webserv $CONFIG_TEST_DIR_BAD$CONFIG
+            echo
+            echo "========>DONE TESTING<========="
+            echo
+        done
+    else
+        for QWERTY in "$@"
+        do
+            if [  ]
+        done
+    fi
 }
 
 server_test() {
@@ -69,4 +79,11 @@ dispatcher_test() {
 
 # config_test
 # server_test
-dispatcher_test
+# dispatcher_test
+
+if  [ "$1" == "config_test" ]
+then
+    config_test
+fi
+
+config_test  asdf shit qwerty
