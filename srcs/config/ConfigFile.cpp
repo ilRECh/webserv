@@ -16,10 +16,17 @@ ConfigFile::~ConfigFile()
 {
     Config_file.close();
 
-    std::vector<ServerBlock *>::iterator instance = Instances.begin();
+    std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator
+        instance = Instances.begin();
     while (instance != Instances.end())
     {
-        delete (*instance);
+        std::vector<ServerBlock *>::iterator block = instance->second.begin();
+        while (block != instance->second.end())
+        {
+            delete *block;
+            ++block;
+        }
+
         ++instance;
     }
 
@@ -29,51 +36,6 @@ ConfigFile::~ConfigFile()
 bool ConfigFile::good()
 {
     return Config_file.good();
-}
-
-void ConfigFile::read_file()
-{
-    while (Config_file.good())
-    {
-        if (getline_trimmed() == "server {")
-        {
-            ServerBlock *block = new ServerBlock(*this);
-
-            try {
-                block->parse_block();
-                block->validate();
-#if 0
-                switch ()
-                {
-                    case INSTANCE_IS_DEFAULT:
-                        block->mark_default();
-                        Instances.push_back(block);
-                        break;
-                    case REGULAR_INSTANCE:
-                        Instances.push_back(block);
-                        break;
-                    case DUPLICATE:
-                        delete block;
-                    default:
-                        break;
-                }
-                // if (not find_duplicates_in(Instances, *block))
-                // {
-                //    Instances.insert(make_pair(block->get_first_name(), block));
-                // }
-                // else
-                // {
-                //    delete block;
-                // }
-#else
-delete block;
-#endif
-            } catch (std::exception &e) {
-                OUT("Catched from Server block: " << e.what());
-                delete block;
-            }
-        }
-    }
 }
 
 std::string ConfigFile::getline_trimmed()
@@ -104,9 +66,56 @@ std::string ConfigFile::getline_trimmed()
     return line;
 }
 
-bool ConfigFile::find_duplicates_in_instances(ServerBlock & block)
+void ConfigFile::read_file()
 {
-    bool result = false;
+    while (Config_file.good())
+    {
+        if (getline_trimmed() == "server {")
+        {
+            ServerBlock *block = new ServerBlock(*this);
+
+            try {
+                block->parse_block();
+                block->validate();
+
+                std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator
+                    similar_address = find_similar_addresses(*block);
+                if (similar_address != Instances.end())
+                {
+                    if (not find_similar_server_name(similar_address->second, *block))
+                    {
+                        similar_address->second.push_back(block);
+                    }
+                    else
+                    {
+                        OUT("Block dropped");
+                        delete block;
+                    }
+                }
+                else
+                {
+                    Instances.insert(
+                        make_pair(
+                            make_pair(
+                                block->get_host(),
+                                block->get_port()
+                            ),
+                            std::vector<ServerBlock *>()
+                        )
+                    ).first->second.push_back(block);
+
+                }
+            } catch (std::exception &e) {
+                OUT("Catched from Server block: " << e.what());
+                delete block;
+            }
+        }
+    }
+}
+
+std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator 
+    ConfigFile::find_similar_addresses(ServerBlock & block)
+{
     addrinfo *instance_net_info;
     addrinfo *server_net_info;
     addrinfo hints;
@@ -126,18 +135,69 @@ bool ConfigFile::find_duplicates_in_instances(ServerBlock & block)
         if (server_net_info and server_net_info->ai_addr and
             instance_net_info and instance_net_info->ai_addr)
         {
-            if (memcmp(server_net_info->ai_addr->sa_data, instance_net_info->ai_addr->sa_data,
-                sizeof(server_net_info->ai_addr->sa_data)) == 0)
+            if (memcmp(server_net_info->ai_addr->sa_data,
+                       instance_net_info->ai_addr->sa_data,
+                       sizeof(server_net_info->ai_addr->sa_data)) == 0)
             {
-                // compare_server_names(block.)
+                OUT("Similar address for " << NL
+                    << block.get_host() << NL
+                    << block.get_port() << NL
+                    << "found:" << NL
+                    << instance->first.first << NL
+                    << instance->first.second);
+                freeaddrinfo(server_net_info);
+                break;
             }
         }
 
         freeaddrinfo(server_net_info);
 
+        ++instance;
     }
 
     freeaddrinfo(instance_net_info);
+
+    return instance;
+}
+
+bool ConfigFile::find_similar_server_name(std::vector<ServerBlock *> blocks, ServerBlock & new_block)
+{
+    bool result = false;
+
+    std::vector<ServerBlock *>::iterator block = blocks.begin();
+    while (block != blocks.end())
+    {
+        std::set<std::string>::iterator name = new_block.get_server_names().begin();
+        if (name != new_block.get_server_names().end())
+        {
+            std::set<std::string>::iterator block_name = (*block)->get_server_names().find(*name);
+            if (block_name != (*block)->get_server_names().end())
+            {
+                OUT("Similar server name for " << NL
+                    << new_block.get_host() << NL
+                    << new_block.get_port() << NL
+                    << "\"" << *name << "\"" << NL
+                    << "found: " << NL
+                    << (*block)->get_host() << NL
+                    << (*block)->get_port() << NL
+                    << (*block_name));
+                result = true;
+            }
+        }
+        else if ((*block)->get_server_names().begin() == (*block)->get_server_names().end())
+        {
+            OUT("Similar server name for " << NL
+            << new_block.get_host() << NL
+            << new_block.get_port() << NL
+            << "\"\"" << NL
+            << "found: " << NL
+            << (*block)->get_host() << NL
+            << (*block)->get_port());
+            result = true;
+        }
+
+        ++block;
+    }
 
     return result;
 }

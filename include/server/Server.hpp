@@ -1,13 +1,13 @@
 #pragma once
 
 #include "logger.hpp"
-#include "AVirtualServer.hpp"
 
 #include <errno.h>
 #include <cstring>
 #include <string>
 #include <cstdlib>
 #include <list>
+#include <vector>
 
 // networking
 #include <sys/types.h>
@@ -31,6 +31,7 @@
 
 class Connection;
 class VirtualServer;
+class ServerBlock;
 
 class Server
 {

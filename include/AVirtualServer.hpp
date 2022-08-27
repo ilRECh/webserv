@@ -25,20 +25,22 @@ protected:
     friend Server;
 public:
     AVirtualServer(std::string host,
-            std::string port)
-        :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE),
-            Host(host),
-            Port(port)
-    {} ;
+                   std::string port)
+        :   Host(host),
+            Port(port),
+            Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
+    {}
 
     AVirtualServer()
-        :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
-    {} ;
+        :   Host(),
+            Port(),
+            Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
+    {}
 
     AVirtualServer(AVirtualServer & that)
-        :   Client_body_size(that.Client_body_size),
-            Host(that.Host),
+        :   Host(that.Host),
             Port(that.Port),
+            Client_body_size(that.Client_body_size),
             Server_names(that.Server_names),
             Error_pages(that.Error_pages)
     {} ;

@@ -4,6 +4,7 @@
 #include "Server.hpp"
 #include <fstream>
 #include <vector>
+#include <map>
 
 class ServerBlock;
 
@@ -17,6 +18,10 @@ private:
     std::ifstream Config_file;
     std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> > Instances;
 
+    bool find_similar_server_name(std::vector<ServerBlock *> blocks, ServerBlock & block);
+std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator 
+    find_similar_addresses(ServerBlock & block);
+
 public:
     ConfigFile(std::string const path_to_config_file);
     ~ConfigFile();
@@ -24,6 +29,5 @@ public:
     bool good();
     void read_file();
     std::string getline_trimmed();
-    bool find_duplicates_in_instances(ServerBlock & block);
     std::vector<Server *> get_servers();
 };

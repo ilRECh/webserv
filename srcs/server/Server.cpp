@@ -7,27 +7,23 @@
 Server::Server(std::string const host ,
                std::string const port ,
                std::vector<ServerBlock *> & blocks)
-    :   Net_info(0),
+    :   Host(host),
+        Port(port),
+        Net_info(0),
         Sock_len(0),
         Fd_set(),
         Sock_fd(0),
         Max_fd(0)
 {
     Virtual_servers.reserve(blocks.size());
+
     std::vector<ServerBlock *>::iterator block = blocks.begin();
     while (block != blocks.end())
     {
         Virtual_servers.push_back(new VirtualServer(**block));
+
+        ++block;
     }
-    //move to VirtualServer constructor
-    // std::map<std::string, ALocation *>::iterator location = block.Locations.begin();
-    // while (location != block.Locations.end())
-    // {
-    //     ALocation * new_location = new Location(*(location->second));
-    //     Locations.insert(make_pair(location->first, new_location));
-    
-    //     ++location;
-    // }
     OUT_DBG("Constructor");
 }
 
@@ -41,11 +37,10 @@ Server::~Server()
         ++conn;
     }
 
-    std::map<std::string, ALocation *>::iterator location = Locations.begin();
-    while (location != Locations.end())
+    std::vector<VirtualServer *>::iterator virtual_server = Virtual_servers.begin();
+    while (virtual_server != Virtual_servers.end())
     {
-        delete location->second;
-        ++location;
+        delete (*virtual_server);
     }
 
     FD_ZERO(&Write_set);
@@ -96,13 +91,6 @@ void Server::init()
     if (listen(Sock_fd, SOMAXCONN))
     {
         throw ERR(strerror(errno));
-    }
-
-    std::set<std::string>::iterator name_iter = Server_names.begin();
-    while (name_iter != Server_names.end())
-    {
-        OUT("Server name: " << *name_iter << NL);
-        ++name_iter;
     }
 
     OUT(   "Server Host:   " << Host << NL
