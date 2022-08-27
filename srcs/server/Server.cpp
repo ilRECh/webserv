@@ -41,6 +41,7 @@ Server::~Server()
     while (virtual_server != Virtual_servers.end())
     {
         delete (*virtual_server);
+        ++virtual_server;
     }
 
     FD_ZERO(&Write_set);
