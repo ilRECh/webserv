@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ABlock.hpp"
-#include "AServer.hpp"
+#include "AVirtualServer.hpp"
 #include "logger.hpp"
 #include <map>
 #include <set>
@@ -9,7 +9,7 @@
 class LocationBlock;
 class ConfigFile;
 
-class ServerBlock : public ABlock<ServerBlock>, public AServer
+class ServerBlock : public ABlock<ServerBlock>, public AVirtualServer
 {
 private:
     ServerBlock(ServerBlock &that);

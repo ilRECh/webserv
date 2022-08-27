@@ -1,7 +1,7 @@
 #pragma once
 
 #include "logger.hpp"
-#include "AServer.hpp"
+#include "AVirtualServer.hpp"
 
 #include <errno.h>
 #include <cstring>
@@ -30,23 +30,26 @@
 #include <arpa/inet.h>
 
 class Connection;
+class VirtualServer;
 
-class Server : public AServer
+class Server
 {
 private:
     Server();
     Server(Server& that);
     Server& operator=(Server& that);
 
-    addrinfo  *Net_info;
-    socklen_t  Sock_len;
-    fd_set     Fd_set;
-    fd_set     Read_set;
-    fd_set     Write_set;
-    int        Sock_fd;
-    int        Max_fd;
+    std::string  Host;
+    std::string  Port;
+    addrinfo    *Net_info;
+    socklen_t    Sock_len;
+    fd_set       Fd_set;
+    fd_set       Read_set;
+    fd_set       Write_set;
+    int          Sock_fd;
+    int          Max_fd;
 
-    bool       Is_inited;
+    std::vector<VirtualServer *> Virtual_servers;
 
     std::list<Connection *> Accepted_conns;
 
@@ -59,8 +62,8 @@ private:
 
 public:
     Server(std::string const host ,
-           std::string const port);
-    Server(AServer & block);
+           std::string const port ,
+           std::vector<ServerBlock *> & blocks);
     ~Server();
     void init();
     void run();

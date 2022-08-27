@@ -1,36 +1,33 @@
+#include "ServerBlock.hpp"
+#include "VirtualServer.hpp"
+#include "Location.hpp"
 #include "Server.hpp"
 #include "Connection.hpp"
-#include "ServerBlock.hpp"
-#include "Location.hpp"
 
 Server::Server(std::string const host ,
-               std::string const port)
-    :   AServer(host, port),
-        Net_info(0),
+               std::string const port ,
+               std::vector<ServerBlock *> & blocks)
+    :   Net_info(0),
         Sock_len(0),
         Fd_set(),
         Sock_fd(0),
         Max_fd(0)
 {
-    OUT_DBG("Constructor");
-}
-
-Server::Server(AServer & block)
-    :   AServer(block),
-        Net_info(0),
-        Sock_len(0),
-        Fd_set(),
-        Sock_fd(0),
-        Max_fd(0)
-{
-    std::map<std::string, ALocation *>::iterator location = block.Locations.begin();
-    while (location != block.Locations.end())
+    Virtual_servers.reserve(blocks.size());
+    std::vector<ServerBlock *>::iterator block = blocks.begin();
+    while (block != blocks.end())
     {
-        ALocation * new_location = new Location(*(location->second));
-        Locations.insert(make_pair(location->first, new_location));
-
-        ++location;
+        Virtual_servers.push_back(new VirtualServer(**block));
     }
+    //move to VirtualServer constructor
+    // std::map<std::string, ALocation *>::iterator location = block.Locations.begin();
+    // while (location != block.Locations.end())
+    // {
+    //     ALocation * new_location = new Location(*(location->second));
+    //     Locations.insert(make_pair(location->first, new_location));
+    
+    //     ++location;
+    // }
     OUT_DBG("Constructor");
 }
 

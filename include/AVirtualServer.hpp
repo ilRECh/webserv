@@ -9,33 +9,33 @@
 class ALocation;
 class Server;
 
-class AServer
+class AVirtualServer
 {
 private:
-    AServer & operator=(AServer & that);
+    AVirtualServer & operator=(AVirtualServer & that);
 
 protected:
-    size_t Client_body_size;
     std::string Host;
     std::string Port;
+    size_t Client_body_size;
     std::set<std::string> Server_names;
     std::map<int, std::string> Error_pages;
     std::map<std::string, ALocation *> Locations;
 
     friend Server;
 public:
-    AServer(std::string host,
+    AVirtualServer(std::string host,
             std::string port)
         :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE),
             Host(host),
             Port(port)
     {} ;
 
-    AServer()
+    AVirtualServer()
         :   Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
     {} ;
 
-    AServer(AServer & that)
+    AVirtualServer(AVirtualServer & that)
         :   Client_body_size(that.Client_body_size),
             Host(that.Host),
             Port(that.Port),
@@ -53,5 +53,25 @@ public:
         return Port;
     }
 
-    virtual ~AServer() {} ;
+    size_t get_client_body_size() const
+    {
+        return Client_body_size;
+    }
+
+    std::set<std::string> get_server_names() const
+    {
+        return Server_names;
+    }
+
+    std::map<int, std::string> get_error_pages() const
+    {
+        return Error_pages;
+    }
+
+    std::map<std::string, ALocation *> get_locations() const 
+    {
+        return Locations;
+    }
+
+    virtual ~AVirtualServer() {} ;
 };

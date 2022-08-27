@@ -15,7 +15,7 @@
  */
 ServerBlock::ServerBlock(ConfigFile & config)
     :   ABlock(config),
-        AServer()
+        AVirtualServer()
 {
     //host:port
     parsers.push_back(

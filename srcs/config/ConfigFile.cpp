@@ -43,7 +43,7 @@ void ConfigFile::read_file()
                 block->parse_block();
                 block->validate();
 #if 0
-                switch (find_duplicates_in(Instances, *block))
+                switch ()
                 {
                     case INSTANCE_IS_DEFAULT:
                         block->mark_default();
@@ -57,7 +57,7 @@ void ConfigFile::read_file()
                     default:
                         break;
                 }
-                // if ((block->get_first_name()) == Instances.end())
+                // if (not find_duplicates_in(Instances, *block))
                 // {
                 //    Instances.insert(make_pair(block->get_first_name(), block));
                 // }
@@ -104,9 +104,11 @@ std::string ConfigFile::getline_trimmed()
     return line;
 }
 
-ConfigFile::BlockProperty ConfigFile::find_duplicates_in(std::vector<ServerBlock *> & instances,
-                                                         ServerBlock & block)
+bool ConfigFile::find_duplicates_in_instances(ServerBlock & block)
 {
+    bool result = false;
+    addrinfo *instance_net_info;
+    addrinfo *server_net_info;
     addrinfo hints;
     memset(&hints, 0, sizeof hints);
     
@@ -114,14 +116,30 @@ ConfigFile::BlockProperty ConfigFile::find_duplicates_in(std::vector<ServerBlock
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags    = AI_PASSIVE;
 
-    (void)block;
-    std::vector<ServerBlock *>::iterator instance = instances.begin();
-    while (instance != instances.end())
+    getaddrinfo(block.get_host().c_str(), block.get_port().c_str(), &hints, &instance_net_info);
+    
+    std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator instance = Instances.begin();
+    while (instance != Instances.end())
     {
-//TODO: getaddrinfo comparing, then compare sets
+        getaddrinfo(instance->first.first.c_str(), instance->first.second.c_str(), &hints, &server_net_info);
+
+        if (server_net_info and server_net_info->ai_addr and
+            instance_net_info and instance_net_info->ai_addr)
+        {
+            if (memcmp(server_net_info->ai_addr->sa_data, instance_net_info->ai_addr->sa_data,
+                sizeof(server_net_info->ai_addr->sa_data)) == 0)
+            {
+                // compare_server_names(block.)
+            }
+        }
+
+        freeaddrinfo(server_net_info);
+
     }
 
-    return INSTANCE_IS_DEFAULT;
+    freeaddrinfo(instance_net_info);
+
+    return result;
 }
 
 std::vector<Server *> ConfigFile::get_servers()
@@ -131,10 +149,11 @@ std::vector<Server *> ConfigFile::get_servers()
         std::vector<Server *> servers;
         servers.reserve(Instances.size());
 
-        std::vector<ServerBlock *>::iterator server = Instances.begin();
+        std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iterator
+            server = Instances.begin();
         while (server != Instances.end())
         {
-            Server * new_server = new Server(**server);
+            Server * new_server = new Server(server->first.first, server->first.second, server->second);
 
             servers.push_back(new_server);
 
