@@ -18,7 +18,6 @@ private:
     std::string accepted_msg;
     std::string reply_msg;
 
-
     static std::string log_out_with_symbols(char const * to_print);
 
     friend class Server;

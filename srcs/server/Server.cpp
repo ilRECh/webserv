@@ -239,7 +239,7 @@ void Server::reply()
             if (not (*conn)->reply_msg.empty())
             {
                 send((*conn)->fd, (*conn)->reply_msg.c_str(), (*conn)->reply_msg.length(), 0);
-                (*conn)->reply_msg = "";
+                (*conn)->reply_msg.clear();
                 OUT("Reply sent to: " << (*conn)->fd);
             }
         }
