@@ -45,32 +45,32 @@ public:
             Error_pages(that.Error_pages)
     {} ;
 
-    std::string get_host() const
+    std::string const & get_host() const
     {
         return Host;
     }
 
-    std::string get_port() const
+    std::string const & get_port() const
     {
         return Port;
     }
 
-    size_t get_client_body_size() const
+    size_t const & get_client_body_size() const
     {
         return Client_body_size;
     }
 
-    std::set<std::string> get_server_names() const
+    std::set<std::string> const & get_server_names() const
     {
         return Server_names;
     }
 
-    std::map<int, std::string> get_error_pages() const
+    std::map<int, std::string> const & get_error_pages() const
     {
         return Error_pages;
     }
 
-    std::map<std::string, ALocation *> get_locations() const 
+    std::map<std::string, ALocation *> const & get_locations() const 
     {
         return Locations;
     }

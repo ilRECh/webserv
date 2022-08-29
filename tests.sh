@@ -1,69 +1,83 @@
 #!/bin/bash
 
+EXEC=$(realpath webserv)
+MAKE=$(dirname $(realpath Makefile))
+TEST_SRC=$(realpath ./test)
+
 send_to_server() {
     echo $1 | nc -w $2 localhost $3
 }
 
 make_test_build() {
-    make fclean
-    make debug CMDFLAGS+=-DTESTING CMDSRC+=$1
+    make -C $MAKE fclean
+    make -C $MAKE debug CMDFLAGS+=-DTESTING CMDSRC+=$1
+}
+
+##########################################################
+# Config testing functions
+##########################################################
+
+test_files() {
+    if [[ $# < 1 ]]
+    then
+        return
+    fi
+
+    cd $1
+
+    echo "++++++++++++++++++++++++++++++"
+    echo "=======>Testing $1<========="
+    echo "++++++++++++++++++++++++++++++"
+    for TEST in $(ls . | grep ".conf" | sort -n)
+    do
+        echo
+        echo "====>TESTING CONFIG: $(realpath $TEST)<===="
+        echo
+        $EXEC $TEST
+        echo
+        echo "========>DONE TESTING<========="
+        echo
+    done
+
+    cd -
 }
 
 config_test() {
+
+    make_test_build $TEST_SRC/config_test.cpp
+
     if [ -z "$1" ]
     then
-        CONFIG_TEST_DIR_BAD=config/test/bad
-        CONFIG_TEST_DIR_GOOD=config/test/good
-        make_test_build test/config_test.cpp
-
-        echo "++++++++++++++++++++++++++++++"
-        echo "=======>Testing good<========="
-        echo "++++++++++++++++++++++++++++++"
-        for CONFIG in $(ls $CONFIG_TEST_DIR_GODD | sort -n)
-        do
-            echo
-            echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_GOOD$CONFIG<==="
-            echo
-            ./webserv $CONFIG_TEST_DIR_GOOD$CONFIG
-            echo
-            echo "========>DONE TESTING<========="
-            echo
-        done
-
-        echo "++++++++++++++++++++++++++++++"
-        echo "=======>Testing bad<========="
-        echo "++++++++++++++++++++++++++++++"
-        for CONFIG in $(ls $CONFIG_TEST_DIR_BAD | sort -n)
-        do
-            echo
-            echo "===>TESTING CONFIG: $CONFIG_TEST_DIR_BAD$CONFIG<==="
-            echo
-            ./webserv $CONFIG_TEST_DIR_BAD$CONFIG
-            echo
-            echo "========>DONE TESTING<========="
-            echo
-        done
+        cd config/test
+        test_files bad
+        test_files good
+        test_files .
+        cd -
     else
-        for QWERTY in "$@"
+        for CONFIG in "$@"
         do
-            if [  ]
+            echo
+            echo "===>TESTING CONFIG: $CONFIG<==="
+            echo
+            $EXEC $CONFIG
+            echo
+            echo "========>DONE TESTING<========="
+            echo 
         done
     fi
 }
 
 server_test() {
-    EXEC=./webserv
     PORT="8888"
 
-    make_test_build test/server_test.cpp
+    make_test_build $TEST_SRC/server_test.cpp
     $EXEC $PORT & EXEC_PID=$!
     send_to_server "Hello there!" 1 $PORT
     kill -9 $EXEC_PID
 }
 
 dispatcher_test() {
-    EXEC=./webserv
-    CONF=./config/test/multiple_ports.conf
+    CONF=./config/test/
     PORT_1=7777
     PORT_2=8888
     PORT_3=9999
@@ -77,13 +91,22 @@ dispatcher_test() {
     kill -9 $EXEC_PID
 }
 
-# config_test
-# server_test
-# dispatcher_test
-
 if  [ "$1" == "config_test" ]
 then
+    shift
+    config_test "$@"
+elif [ "$1" == "server_test" ]
+then
+    shift
+    server_test "$@"
+elif [ "$1" == "dispatcher_test" ]
+then
+    shift
+    dispatcher_test "$@"
+else
     config_test
+    server_test
+    dispatcher_test
 fi
 
-config_test  asdf shit qwerty
+

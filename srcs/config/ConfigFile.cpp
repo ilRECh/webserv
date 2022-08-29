@@ -162,29 +162,33 @@ std::map<std::pair<std::string, std::string>, std::vector<ServerBlock *> >::iter
 
 bool ConfigFile::find_similar_server_name(std::vector<ServerBlock *> blocks, ServerBlock & new_block)
 {
-    bool result = false;
-
     std::vector<ServerBlock *>::iterator block = blocks.begin();
     while (block != blocks.end())
     {
         std::set<std::string>::iterator name = new_block.get_server_names().begin();
         if (name != new_block.get_server_names().end())
         {
-            std::set<std::string>::iterator block_name = (*block)->get_server_names().find(*name);
-            if (block_name != (*block)->get_server_names().end())
+            while (name != new_block.get_server_names().end())
             {
-                OUT("Similar server name for " << NL
-                    << new_block.get_host() << NL
-                    << new_block.get_port() << NL
-                    << "\"" << *name << "\"" << NL
-                    << "found: " << NL
-                    << (*block)->get_host() << NL
-                    << (*block)->get_port() << NL
-                    << (*block_name));
-                result = true;
+                std::set<std::string>::iterator block_name = (*block)->get_server_names().find(*name);
+                if (block_name != (*block)->get_server_names().end())
+                {
+                    OUT("Similar server name for " << NL
+                        << new_block.get_host() << NL
+                        << new_block.get_port() << NL
+                        << "\"" << *name << "\"" << NL
+                        << "found: " << NL
+                        << (*block)->get_host() << NL
+                        << (*block)->get_port() << NL
+                        << (*block_name));
+                    
+                    return true;
+                }
+
+                ++name;
             }
         }
-        else if ((*block)->get_server_names().begin() == (*block)->get_server_names().end())
+        else if ((*block)->get_server_names().empty())
         {
             OUT("Similar server name for " << NL
             << new_block.get_host() << NL
@@ -193,13 +197,14 @@ bool ConfigFile::find_similar_server_name(std::vector<ServerBlock *> blocks, Ser
             << "found: " << NL
             << (*block)->get_host() << NL
             << (*block)->get_port());
-            result = true;
+
+            return true;
         }
 
         ++block;
     }
 
-    return result;
+    return false;
 }
 
 std::vector<Server *> ConfigFile::get_servers()

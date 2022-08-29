@@ -21,7 +21,7 @@ std::string Connection::log_out_with_symbols(char const * to_print)
 }
 
 Connection::Connection(const int _fd)
-    :   accepted_msg(),
+    :   receiving_finished(false),
         fd(_fd)
 {
     OUT_DBG("Constructor");

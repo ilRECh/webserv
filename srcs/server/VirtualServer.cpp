@@ -5,7 +5,7 @@
 VirtualServer::VirtualServer(ServerBlock & block)
     :   AVirtualServer(block)
 {
-    std::map<std::string, ALocation *>::iterator location = block.get_locations().begin();
+    std::map<std::string, ALocation *>::const_iterator location = block.get_locations().begin();
     while (location != block.get_locations().end())
     {
         ALocation * new_location = new Location(*(location->second));

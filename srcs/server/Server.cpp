@@ -197,7 +197,6 @@ void Server::receive()
                 OUT_DBG(Connection::log_out_with_symbols((*conn)->accepted_msg.c_str()));
                 OUT("Message received from: " << (*conn)->fd);
             }
-
         }
 
         ++conn;
@@ -214,10 +213,10 @@ void Server::prepare_reply()
         {
             // RequestResponse handler(*this);
 
-            // if (handler->request((*conn)->get_accepted_msg()))
+            // if (handler->request((*conn)->accepted_msg)
             // {
-            //     (*conn)->set_reply_msg(handler->responce());
-                (*conn)->accepted_msg.clear();
+            //     (*conn)->reply_msg = handler->responce();
+                // (*conn)->accepted_msg.clear();
             // }
             (*conn)->reply_msg = "\nAccepted from Server: General Kenobi\n\n";
             OUT("Reply prepared for: " << (*conn)->fd);
