@@ -3,6 +3,7 @@
 #include "Location.hpp"
 #include "Server.hpp"
 #include "Connection.hpp"
+#include "RequestResponse.hpp"
 
 Server::Server(std::string const host ,
                std::string const port ,
@@ -209,16 +210,12 @@ void Server::prepare_reply()
 
     while (conn != Accepted_conns.end())
     {
-        if (not (*conn)->accepted_msg.empty())
+        if ((*conn)->ready())
         {
-            // RequestResponse handler(*this);
+            RequestResponse handler(*this);
 
-            // if (handler->request((*conn)->accepted_msg)
-            // {
-            //     (*conn)->reply_msg = handler->responce();
-                // (*conn)->accepted_msg.clear();
-            // }
-            (*conn)->reply_msg = "\nAccepted from Server: General Kenobi\n\n";
+            (*conn)->reply_msg = handler.prepare((*conn)->accepted_msg);
+            (*conn)->accepted_msg.clear();
             OUT("Reply prepared for: " << (*conn)->fd);
         }
 

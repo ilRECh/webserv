@@ -4,7 +4,7 @@
 #include <set>
 #include <map>
 
-#define DEFAULT_CLIENT_BODY_SIZE 1000
+#define DEFAULT_CLIENT_BODY_SIZE 1000000
 
 class ALocation;
 class Server;
@@ -17,7 +17,7 @@ private:
 protected:
     std::string Host;
     std::string Port;
-    size_t Client_body_size;
+    size_t Client_max_body_size;
     std::set<std::string> Server_names;
     std::map<int, std::string> Error_pages;
     std::map<std::string, ALocation *> Locations;
@@ -28,19 +28,19 @@ public:
                    std::string port)
         :   Host(host),
             Port(port),
-            Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
+            Client_max_body_size(DEFAULT_CLIENT_BODY_SIZE)
     {}
 
     AVirtualServer()
         :   Host(),
             Port(),
-            Client_body_size(DEFAULT_CLIENT_BODY_SIZE)
+            Client_max_body_size(DEFAULT_CLIENT_BODY_SIZE)
     {}
 
     AVirtualServer(AVirtualServer & that)
         :   Host(that.Host),
             Port(that.Port),
-            Client_body_size(that.Client_body_size),
+            Client_max_body_size(that.Client_max_body_size),
             Server_names(that.Server_names),
             Error_pages(that.Error_pages)
     {} ;
@@ -57,7 +57,7 @@ public:
 
     size_t const & get_client_body_size() const
     {
-        return Client_body_size;
+        return Client_max_body_size;
     }
 
     std::set<std::string> const & get_server_names() const

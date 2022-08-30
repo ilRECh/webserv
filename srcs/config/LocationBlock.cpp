@@ -81,7 +81,7 @@ void LocationBlock::parse_allow_methods(std::string values)
     {
         char * values_buf = new char[values.length() + 1];
 
-        strcpy(values_buf, values.c_str());
+        strncpy(values_buf, values.c_str(), sizeof(values_buf));
 
         char * method = std::strtok(values_buf, " ");
 

@@ -107,7 +107,7 @@ void ServerBlock::parse_server_name(std::string value)
     {
         char * value_buf = new char[value.length() + 1];
 
-        strcpy(value_buf, value.c_str());
+        strncpy(value_buf, value.c_str(), sizeof(value_buf));
 
         char * name = std::strtok(value_buf, " ");
 
@@ -125,7 +125,7 @@ void ServerBlock::parse_error_page(std::string values)
 {
     char * values_buf = new char[values.length() + 1];
 
-    strcpy(values_buf, values.c_str());
+    strncpy(values_buf, values.c_str(), sizeof(values_buf));
 
     char * value = std::strtok(values_buf, " ");
 
@@ -166,7 +166,7 @@ void ServerBlock::parse_client_body_size(std::string value)
 
     if (client_body_size > 0)
     {
-        Client_body_size = client_body_size;
+        Client_max_body_size = client_body_size;
     }
 }
 
@@ -174,7 +174,7 @@ void ServerBlock::parse_location(std::string value)
 {
     char * value_buf = new char[value.length() + 1];
 
-    strcpy(value_buf, value.c_str());
+    strncpy(value_buf, value.c_str(), sizeof(value_buf));
 
     char * URL = std::strtok(value_buf, " ");
 

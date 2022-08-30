@@ -6,7 +6,6 @@
 #include <unistd.h>
 
 class Server;
-class RequestResponse;
 
 class Connection
 {
@@ -21,10 +20,11 @@ private:
     static std::string log_out_with_symbols(char const * to_print);
 
     friend class Server;
-    friend class RequestResponse;
 public:
     int const fd;
 
     Connection(int const fd);
     ~Connection();
+
+    bool ready();
 };
