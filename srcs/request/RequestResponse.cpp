@@ -15,32 +15,38 @@ RequestResponse::~RequestResponse()
 
 }
 
-std::string & RequestResponse::prepare(std::string & msg)
+std::string & RequestResponse::request()
 {
-    std::string result;
-
     char * msg_parse_buf = new char[msg.size() + 1];
 
     strncpy(msg_parse_buf, msg.c_str(), sizeof(msg_parse_buf));
 
     char * method_path_protocol = std::strtok(msg_parse_buf, CRLF);
 
+    if (method_path_protocol == NULL)
+    {
+        throw 400;
+    }
+
     try {
         evaluate_method_path_protocol(method_path_protocol);
-        
+        evaluate_headers(msg_parse_buf);
+        //validate_minimal
     } catch (int error) {
-        result = examine_code(error);
+        Resp = examine_code(error);
     } catch (...) {
-        result = examine_code(404);
+        Resp = examine_code(404);
     }
 
     delete msg_parse_buf;
-
-    return result;
 }
 
-void RequestResponse::evaluate_method_path_protocol(char * method_path_protocol)
+void RequestResponse::evaluate_method_path_protocol(char const * input_method_path_protocol)
 {
+    char * method_path_protocol = new char[std::strlen(input_method_path_protocol) + 1];
+
+    std::strncpy(method_path_protocol, input_method_path_protocol, std::strlen(input_method_path_protocol) + 1);
+
     char * method   = std::strtok(method_path_protocol, " ");
     char * path     = std::strtok(NULL, CRLF);
     char * protocol = std::strtok(NULL, CRLF);
@@ -50,12 +56,38 @@ void RequestResponse::evaluate_method_path_protocol(char * method_path_protocol)
         protocol == NULL)
     {
         throw 400;
+        delete method_path_protocol;
     }
+
+    Req.method = method;
+    Req.path = path;
+    Req.protocol = protocol;
+
+    delete method_path_protocol;
 }
 
-std::string & RequestResponse::examine_code(int code)
+void RequestResponse::evaluate_headers(char const * msg_parse_buf)
 {
-    std::string result;
+    char * headers = new char[std::strlen(msg_parse_buf) + 1];
+
+    char * header = NULL;
+
+    while ((header = std::strtok(headers, CRLF)) != NULL)
+    {
+
+    }
+
+    delete headers;
+}
+
+std::string response()
+{
+
+}
+
+Response RequestResponse::examine_code(int code)
+{
+    Response result;
 
     result += "fuck you";
 

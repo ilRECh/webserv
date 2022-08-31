@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Request.hpp"
+#include "Response.hpp"
 #include "logger.hpp"
 #include <string>
 
 class Server;
+class Head;
 
 class RequestResponse
 {
@@ -12,14 +15,19 @@ private:
     RequestResponse(RequestResponse & that);
     RequestResponse & operator=(RequestResponse & that);
 
+    Request  Req;
+    Response Resp;
+
     Server & Server_originator;
 
-    void evaluate_method_path_protocol(char * method_path_protocol);
-    std::string & examine_code(int code);
+    void evaluate_method_path_protocol(char const * method_path_protocol);
+    void evaluate_headers(char const * msg_parse_buf);
+    Response examine_code(int code);
 
 public:
     RequestResponse(Server & srv);
     ~RequestResponse();
 
-    std::string & prepare(std::string & msg);
+    void request(std::string & msg)
+    std::string & response();
 };
