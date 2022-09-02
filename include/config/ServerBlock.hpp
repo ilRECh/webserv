@@ -15,12 +15,12 @@ private:
     ServerBlock(ServerBlock &that);
     ServerBlock& operator=(ServerBlock &that);
 
-    void parse_listen(std::string value);
-    void parse_server_name(std::string value);
-    void parse_error_page(std::string values);
-    void parse_client_body_size(std::string value);
-    void parse_index(std::string value);
-    void parse_location(std::string value);
+    void parse_listen(char * value);
+    void parse_server_name(char * value);
+    void parse_error_page(char * values);
+    void parse_client_body_size(char * value);
+    void parse_index(char * value);
+    void parse_location(char * value);
 
 public:
     ServerBlock(ConfigFile & config);

@@ -2,8 +2,6 @@
 #include "Server.hpp"
 #include <cstring>
 
-#define CRLF "\r\n"
-
 RequestResponse::RequestResponse(Server & srv)
     :   Server_originator(srv)
 {
@@ -15,50 +13,50 @@ RequestResponse::~RequestResponse()
 
 }
 
-void RequestResponse::request(std::string & msg)
+std::string RequestResponse::proceed(std::string & msg)
 {
-
+    Response resp;
 
     try {
         Request req(msg);
         //validate_minimal
     } catch (int error) {
-        Resp = examine_code(error);
+        // resp = examine_code(error);
     } catch (...) {
-        Resp = examine_code(404);
+        // resp = examine_code(404);
     }
 
-
+    // return resp.string();
+    return "bye";
 }
 
-Response RequestResponse::examine_code(int code)
-{
-    Response result;
+// Response RequestResponse::examine_code(int code)
+// {
 
-    result += "fuck you";
+//     result += "fuck you";
 
-    switch (code)
-    {
-        case 301:
-            result += "Redirecting";
-            break;
-        case 400:
-            result += "Bad Request";
-            break;
-        case 403:
-            result += "Forbidden";
-            break; 
-        case 404:
-            result += "Not found";
-            break;
-        case 405:
-            result += "Method not allowed";
-            break;
-        default:
-            break;
-    }
+//     switch (code)
+//     {
+//         case 301:
+//             result += "Redirecting";
+//             break;
+//         case 400:
+//             result += "Bad Request";
+//             break;
+//         case 403:
+//             result += "Forbidden";
+//             break; 
+//         case 404:
+//             result += "Not found";
+//             break;
+//         case 405:
+//             result += "Method not allowed";
+//             break;
+//         default:
+//             break;
+//     }
 
-    result += "shit";
+//     result += "shit";
 
-    return result;
-}
+//     return result;
+// }

@@ -1,17 +1,32 @@
 #include "Request.hpp"
 #include <cstring>
+#include <algorithm>
 
 #define CRLF "\r\n"
 
 Request::Request(std::string & msg)
 {
-    char * msg_parse_buf = get_parsing_buf_from(msg);
+    Parsers.reserve(3);
+
+    Parsers.push_back(
+        Request::ParamCallback("Host: ", std::mem_fun(&Request::parse_host), this)
+    );
+
+    Parsers.push_back(
+        Request::ParamCallback("Content-Type: ", std::mem_fun(&Request::parse_content_type), this)
+    );
+
+    Parsers.push_back(
+        Request::ParamCallback("Content-Length: ", std::mem_fun(&Request::parse_content_length), this)
+    );
+
+    char * msg_parse_buf = get_parsing_buf_from(msg.c_str());
 
     evaluate_method_path_protocol(get_parsing_buf_from(std::strtok(msg_parse_buf, CRLF)));
 
     char * header = NULL;
 
-    while ((header = std::strtok(msg_parse_buf, CRLF)) != NULL)
+    while ((header = std::strtok(NULL, CRLF)) != NULL)
     {
 
     }
@@ -29,16 +44,7 @@ Request::~Request()
     }
 }
 
-char * Request::get_parsing_buf_from(std::string & buf)
-{
-    char * new_buf = new char[buf.length() + 1];
-
-    strncpy(new_buf, buf.c_str(), sizeof(new_buf));
-    Parsing_buffers.push_front(new_buf);
-    return new_buf;
-}
-
-char * Request::get_parsing_buf_from(char * buf)
+char * Request::get_parsing_buf_from(char const * buf)
 {
     char * new_buf = new char[std::strlen(buf) + 1];
 
@@ -63,6 +69,21 @@ void Request::evaluate_method_path_protocol(char * method_path_protocol)
     Method = method;
     Path = path;
     Protocol = protocol;
+}
+
+void Request::parse_host(char * host)
+{
+
+}
+
+void Request::parse_content_type(char * host)
+{
+
+}
+
+void Request::parse_content_length(char * host)
+{
+
 }
 
 void Request::validate()

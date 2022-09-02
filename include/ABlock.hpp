@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <list>
 #include "logger.hpp"
 #include "ConfigFile.hpp"
 
@@ -22,29 +23,31 @@ protected:
     {
     private:
         const char *param_name;
-        std::mem_fun1_t<void, T, std::string> callback_func;
+        std::mem_fun1_t<void, T, char *> callback_func;
         T * caller_object;
 
         friend ABlock;
     public:
         ParamCallback(const char *_param_name,
-                      std::mem_fun1_t<void, T, std::string> _callback,
+                      std::mem_fun1_t<void, T, char *> _callback,
                       T * _caller_object)
         : param_name(_param_name), callback_func(_callback), caller_object(_caller_object) {}
         
-        void callback(std::string arg)
+        void callback(char *)
         {
             callback_func(caller_object, arg);
         }
     };
 
     ConfigFile & Config;
-    std::vector<ParamCallback> parsers;
+    std::vector<ParamCallback> Parsers;
+    
+    std::list<char *> Paring_buffers;
 
     void parse_and_validate_parameter(std::string parameter)
     {
-        typename std::vector<ParamCallback>::iterator parser = parsers.begin();
-        while (parser != parsers.end())
+        typename std::vector<ParamCallback>::iterator parser = Parsers.begin();
+        while (parser != Parsers.end())
         {
             size_t size = strlen(parser->param_name);
             std::string param_name = parameter.substr(0, size);
@@ -52,7 +55,7 @@ protected:
             if (parser->param_name == param_name)
             {
                 size_t start_from = size;
-                parser->callback(parameter.substr(start_from, parameter.length()));
+                parser->callback(get_parsing_buf_from(parameter.substr(start_from, parameter.length()).c_str()));
                 break;
             }
 
@@ -60,9 +63,27 @@ protected:
         }
     }
 
+    char * get_parsing_buf_from(char const * buf)
+    {
+        char * new_buf = new char[std::strlen(buf) + 1];
+
+        strncpy(new_buf, buf, sizeof(new_buf));
+        Parsing_buffers.push_front(new_buf);
+        return new_buf;
+    }
+
 public:
     ABlock(ConfigFile & config) : Config(config) { OUT_DBG("Constructor"); };
-    virtual ~ABlock() { OUT_DBG("Destructor"); };
+    virtual ~ABlock()
+    {
+        std::list<char *>::iterator buf = Parsing_buffers.begin();
+        while (buf != Parsing_buffers.end())
+        {
+            delete *buf;
+            ++buf;
+        }
+        OUT_DBG("Destructor");
+    };
 
     void parse_block()
     {

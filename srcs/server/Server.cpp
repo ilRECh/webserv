@@ -214,8 +214,7 @@ void Server::prepare_reply()
         {
             RequestResponse handler(*this);
 
-            handler.request((*conn)->accepted_msg);
-            (*conn)->reply_msg = handler.response;
+            (*conn)->reply_msg = handler.proceed((*conn)->accepted_msg);
             (*conn)->accepted_msg.clear();
             OUT("Reply prepared for: " << (*conn)->fd);
         }

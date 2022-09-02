@@ -17,29 +17,31 @@ ServerBlock::ServerBlock(ConfigFile & config)
     :   ABlock(config),
         AVirtualServer()
 {
+    Parsers.reserve(5);
+
     //host:port
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("listen " , std::mem_fun(&ServerBlock::parse_listen), this)
     );
 
     //https://nginx.org/ru/docs/http/request_processing.html
     //name [name [name] ...]
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("server_name "  , std::mem_fun(&ServerBlock::parse_server_name), this)
     );
 
     //code path
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("error_page " , std::mem_fun(&ServerBlock::parse_error_page), this)
     );
 
     //num
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("client_body_size " , std::mem_fun(&ServerBlock::parse_client_body_size), this)
     );
 
     //location path { ... }
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("location " , std::mem_fun(&ServerBlock::parse_location), this)
     );
 
@@ -58,30 +60,30 @@ ServerBlock::~ServerBlock()
     OUT_DBG("Destructor");
 }
 
-void ServerBlock::parse_listen(std::string value)
+void ServerBlock::parse_listen(char * value)
 {
     if (Host.empty() and Port.empty())
     {
         const char * msg = "Invalid host:port value of the listen parameter";
         std::string host;
         std::string port;
-        size_t delimiter_pos = value.find(':');
+        char * delimiter_pos = strchr(value, ':');
 
-        if (delimiter_pos != value.npos)
+        if (delimiter_pos != NULL)
         {
-            if (delimiter_pos != value.rfind(':'))
+            if (delimiter_pos != strrchr(value, ':'))
             {
                 throw ERR(msg);
             }
 
-            host = value.substr(0, delimiter_pos);
+            host = std::string(value, delimiter_pos);
 
             if (host.empty())
             {
                 host = "127.0.0.1";
             }
 
-            port = value.substr(delimiter_pos + 1, value.length());
+            port = std::string(delimiter_pos + 1);
         }
         else
         {
@@ -101,33 +103,23 @@ void ServerBlock::parse_listen(std::string value)
     }
 }
 
-void ServerBlock::parse_server_name(std::string value)
+void ServerBlock::parse_server_name(char * value)
 {
     if (Server_names.empty())
     {
-        char * value_buf = new char[value.length() + 1];
-
-        strncpy(value_buf, value.c_str(), sizeof(value_buf));
-
-        char * name = std::strtok(value_buf, " ");
+        char * name = std::strtok(value, " ");
 
         while (name != NULL)
         {
             Server_names.insert(name);
             name = std::strtok(NULL, " ");
         }
-
-        delete value_buf;
     }
 }
 
-void ServerBlock::parse_error_page(std::string values)
+void ServerBlock::parse_error_page(char * values)
 {
-    char * values_buf = new char[values.length() + 1];
-
-    strncpy(values_buf, values.c_str(), sizeof(values_buf));
-
-    char * value = std::strtok(values_buf, " ");
+    char * value = std::strtok(values, " ");
 
     if (value != NULL)
     {
@@ -156,13 +148,11 @@ void ServerBlock::parse_error_page(std::string values)
             }
         }
     }
-
-    delete values_buf;
 }
 
-void ServerBlock::parse_client_body_size(std::string value)
+void ServerBlock::parse_client_body_size(char * value)
 {
-    size_t client_body_size = std::atoi(value.c_str());
+    size_t client_body_size = std::atoi(value);
 
     if (client_body_size > 0)
     {
@@ -170,13 +160,9 @@ void ServerBlock::parse_client_body_size(std::string value)
     }
 }
 
-void ServerBlock::parse_location(std::string value)
+void ServerBlock::parse_location(char * value)
 {
-    char * value_buf = new char[value.length() + 1];
-
-    strncpy(value_buf, value.c_str(), sizeof(value_buf));
-
-    char * URL = std::strtok(value_buf, " ");
+    char * URL = std::strtok(value, " ");
 
     if (URL != NULL)
     {
@@ -204,8 +190,6 @@ void ServerBlock::parse_location(std::string value)
             }
         }
     }
-
-    delete value_buf;
 }
 
 void ServerBlock::validate()

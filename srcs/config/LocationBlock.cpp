@@ -27,43 +27,45 @@ LocationBlock::LocationBlock(ConfigFile & config)
         ALocation(),
         Possible_allow_methods(Possible_allow_methods_setup, Possible_allow_methods_setup + (sizeof(Possible_allow_methods_setup) / sizeof(const char *)))
 {
+    Parsers.reserve(8);
+
     //method_name [method_name [method_name]]
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("allow_methods ", std::mem_fun(&LocationBlock::parse_allow_methods), this)
     );
 
     //path
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("root ", std::mem_fun(&LocationBlock::parse_root), this)
     );
 
     //path
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("index ", std::mem_fun(&LocationBlock::parse_index), this)
     );
 
     //on/off
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("autoindex ", std::mem_fun(&LocationBlock::parse_autoindex), this)
     );
 
     //code uri
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("return 301 ", std::mem_fun(&LocationBlock::parse_return), this)
     );
 
     //code uri
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("fastcgi_param PATH_INFO ", std::mem_fun(&LocationBlock::parse_fastcgi_path), this)
     );
 
     //code uri
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("upload_pass ", std::mem_fun(&LocationBlock::parse_upload_pass), this)
     );
 
     //code uri
-    parsers.push_back(
+    Parsers.push_back(
         ABlock::ParamCallback("upload_store ", std::mem_fun(&LocationBlock::parse_upload_store), this)
     );
 
