@@ -15,8 +15,7 @@ private:
     RequestResponse(RequestResponse & that);
     RequestResponse & operator=(RequestResponse & that);
 
-    Request  Req;
-    Response Resp;
+
 
     Server & Server_originator;
 
@@ -28,6 +27,6 @@ public:
     RequestResponse(Server & srv);
     ~RequestResponse();
 
-    void request(std::string & msg)
+    void request(std::string & msg);
     std::string & response();
 };
