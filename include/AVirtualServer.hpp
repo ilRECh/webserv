@@ -23,7 +23,7 @@ protected:
     std::map<std::string, ALocation *> Locations;
 
     friend Server;
-public:
+
     AVirtualServer(std::string host,
                    std::string port)
         :   Host(host),

@@ -15,19 +15,20 @@ RequestResponse::~RequestResponse()
 
 std::string RequestResponse::proceed(std::string & msg)
 {
-    Response resp;
+    std::string result;
 
     try {
         Request req(msg);
-        //validate_minimal
-    } catch (int error) {
-        // resp = examine_code(error);
+        Response resp(req);
+
+        result = resp->execute();
+    } catch (int code) {
+        result = examine_code(code);
     } catch (...) {
-        // resp = examine_code(404);
+        result = examine_code(404);
     }
 
-    // return resp.string();
-    return "bye";
+    return result;
 }
 
 // Response RequestResponse::examine_code(int code)

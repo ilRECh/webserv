@@ -1,7 +1,7 @@
 #include "Location.hpp"
 #include "LocationBlock.hpp"
 
-Location::Location(ALocation & block)
+Location::Location(LocationBlock & block)
     :   ALocation(block)
 {
     OUT_DBG("Constructor");

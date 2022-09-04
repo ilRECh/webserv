@@ -5,19 +5,20 @@
 #define CRLF "\r\n"
 
 Request::Request(std::string & msg)
+    :   AHeaders()
 {
     Parsers.reserve(3);
 
     Parsers.push_back(
-        Request::ParamCallback("Host: ", std::mem_fun(&Request::parse_host), this)
+        Request::HeaderCallback("Host: ", std::mem_fun(&Request::parse_host), this)
     );
 
     Parsers.push_back(
-        Request::ParamCallback("Content-Type: ", std::mem_fun(&Request::parse_content_type), this)
+        Request::HeaderCallback("Content-Type: ", std::mem_fun(&Request::parse_content_type), this)
     );
 
     Parsers.push_back(
-        Request::ParamCallback("Content-Length: ", std::mem_fun(&Request::parse_content_length), this)
+        Request::HeaderCallback("Content-Length: ", std::mem_fun(&Request::parse_content_length), this)
     );
 
     char * msg_parse_buf = get_parsing_buf_from(msg.c_str());
@@ -28,10 +29,8 @@ Request::Request(std::string & msg)
 
     while ((header = std::strtok(NULL, CRLF)) != NULL)
     {
-
+        parse_header(header);
     }
-
-    validate();
 }
 
 Request::~Request()
@@ -48,9 +47,28 @@ char * Request::get_parsing_buf_from(char const * buf)
 {
     char * new_buf = new char[std::strlen(buf) + 1];
 
-    strncpy(new_buf, buf, sizeof(new_buf));
+    strcpy(new_buf, buf);
     Parsing_buffers.push_front(new_buf);
     return new_buf;
+}
+
+void Request::parse_header(std::string header)
+{
+    std::vector<HeaderCallback>::iterator parser = Parsers.begin();
+    while (parser != Parsers.end())
+    {
+        size_t size = strlen(parser->header_name);
+        std::string header_name = header.substr(0, size);
+
+        if (parser->header_name == header_name)
+        {
+            size_t start_from = size;
+            parser->callback(get_parsing_buf_from(header.substr(start_from, header.length()).c_str()));
+            break;
+        }
+
+        ++parser;
+    }
 }
 
 void Request::evaluate_method_path_protocol(char * method_path_protocol)
@@ -73,26 +91,24 @@ void Request::evaluate_method_path_protocol(char * method_path_protocol)
 
 void Request::parse_host(char * host)
 {
-
-}
-
-void Request::parse_content_type(char * host)
-{
-
-}
-
-void Request::parse_content_length(char * host)
-{
-
-}
-
-void Request::validate()
-{
-    if (Method.empty() or
-        Path.empty() or
-        Protocol.empty() or
-        Host.empty())
+    if (Host.empty())
     {
-        throw 400;
+        Host = host;
+    }
+}
+
+void Request::parse_content_type(char * content_type)
+{
+    if (Content_type.empty())
+    {
+        Content_type = content_type;
+    }
+}
+
+void Request::parse_content_length(char * content_length)
+{
+    if (Content_length == 0)
+    {
+        Content_length = std::atoi(content_length);
     }
 }

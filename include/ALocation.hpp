@@ -21,7 +21,7 @@ protected:
     std::string Upload_store; //Path, where to store uploaded files
 
     friend Location;
-public:
+
     ALocation() : Autoindex(-1) {} ;
 
     ALocation(ALocation & that)
@@ -32,8 +32,7 @@ public:
             Index(that.Index),
             FastCGI_path(that.FastCGI_path),
             Upload_pass(that.Upload_pass),
-            Upload_store(that.Upload_store)
-    {} ;
+            Upload_store(that.Upload_store) {}
 
     virtual ~ALocation() {} ;
 };

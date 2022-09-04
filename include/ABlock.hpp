@@ -11,7 +11,7 @@
  * @brief Abstrac class, Block parsing base
  * 
  */
-template<typename T>
+// template<typename T>
 class ABlock
 {
 private:
@@ -19,21 +19,41 @@ private:
     ABlock &operator=(ABlock &that);
 
 protected:
+    // class ParamCallback
+    // {
+    // private:
+    //     const char *param_name;
+    //     std::mem_fun1_t<void, T, char *> callback_func;
+    //     T * caller_object;
+
+    //     friend ABlock;
+    // public:
+    //     ParamCallback(const char *_param_name,
+    //                   std::mem_fun1_t<void, T, char *> _callback,
+    //                   T * _caller_object)
+    //     : param_name(_param_name), callback_func(_callback), caller_object(_caller_object) {}
+        
+    //     void callback(char * arg)
+    //     {
+    //         callback_func(caller_object, arg);
+    //     }
+    // };
+
     class ParamCallback
     {
     private:
         const char *param_name;
-        std::mem_fun1_t<void, T, char *> callback_func;
-        T * caller_object;
+        std::mem_fun1_t<void, ABlock, char *> callback_func;
+        ABlock * caller_object;
 
         friend ABlock;
     public:
         ParamCallback(const char *_param_name,
-                      std::mem_fun1_t<void, T, char *> _callback,
-                      T * _caller_object)
+                      std::mem_fun1_t<void, ABlock, char *> _callback,
+                      ABlock * _caller_object)
         : param_name(_param_name), callback_func(_callback), caller_object(_caller_object) {}
         
-        void callback(char *)
+        void callback(char * arg)
         {
             callback_func(caller_object, arg);
         }
@@ -42,7 +62,7 @@ protected:
     ConfigFile & Config;
     std::vector<ParamCallback> Parsers;
     
-    std::list<char *> Paring_buffers;
+    std::list<char *> Parsing_buffers;
 
     void parse_and_validate_parameter(std::string parameter)
     {
@@ -67,12 +87,11 @@ protected:
     {
         char * new_buf = new char[std::strlen(buf) + 1];
 
-        strncpy(new_buf, buf, sizeof(new_buf));
+        strcpy(new_buf, buf);
         Parsing_buffers.push_front(new_buf);
         return new_buf;
     }
 
-public:
     ABlock(ConfigFile & config) : Config(config) { OUT_DBG("Constructor"); };
     virtual ~ABlock()
     {

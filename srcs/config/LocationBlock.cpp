@@ -77,15 +77,11 @@ LocationBlock::~LocationBlock()
     OUT_DBG("Destructor");
 }
 
-void LocationBlock::parse_allow_methods(std::string values)
+void LocationBlock::parse_allow_methods(char * values)
 {
     if (Allow_methods.empty())
     {
-        char * values_buf = new char[values.length() + 1];
-
-        strncpy(values_buf, values.c_str(), sizeof(values_buf));
-
-        char * method = std::strtok(values_buf, " ");
+        char * method = std::strtok(values, " ");
 
         while (method != NULL)
         {
@@ -98,18 +94,16 @@ void LocationBlock::parse_allow_methods(std::string values)
 
             method = std::strtok(NULL, " ");
         }
-
-        delete values_buf;
     }
 }
 
-void LocationBlock::parse_root(std::string value)
+void LocationBlock::parse_root(char * value)
 {
     if (Root.empty())
     {
         struct stat sb;
 
-        if (stat(value.c_str(), &sb) == 0)
+        if (stat(value, &sb) == 0)
         {
             if (S_ISDIR(sb.st_mode))
             {
@@ -119,13 +113,13 @@ void LocationBlock::parse_root(std::string value)
     }
 }
 
-void LocationBlock::parse_index(std::string value)
+void LocationBlock::parse_index(char * value)
 {
     if (Index.empty())
     {
         struct stat sb;
 
-        if (stat(value.c_str(), &sb) == 0)
+        if (stat(value, &sb) == 0)
         {
             if (S_ISREG(sb.st_mode))
             {
@@ -135,22 +129,22 @@ void LocationBlock::parse_index(std::string value)
     }
 }
 
-void LocationBlock::parse_autoindex(std::string value)
+void LocationBlock::parse_autoindex(char * value)
 {
     if (Autoindex == -1)
     {
-        if (value == "on")
+        if (std::strcmp(value, "on"))
         {
             Autoindex = true;
         }
-        else if (value == "off")
+        else if (std::strcmp(value, "off"))
         {
             Autoindex = false;
         }
     }
 }
 
-void LocationBlock::parse_return(std::string value)
+void LocationBlock::parse_return(char * value)
 {
     if (Return.empty())
     {
@@ -158,13 +152,13 @@ void LocationBlock::parse_return(std::string value)
     }
 }
 
-void LocationBlock::parse_fastcgi_path(std::string value)
+void LocationBlock::parse_fastcgi_path(char * value)
 {
     if (FastCGI_path.empty())
     {
         struct stat sb;
 
-        if (stat(value.c_str(), &sb) == 0)
+        if (stat(value, &sb) == 0)
         {
             if (S_ISREG(sb.st_mode))
             {
@@ -174,7 +168,7 @@ void LocationBlock::parse_fastcgi_path(std::string value)
     }
 }
 
-void LocationBlock::parse_upload_pass(std::string value)
+void LocationBlock::parse_upload_pass(char * value)
 {
     if (Upload_pass.empty())
     {
@@ -182,13 +176,13 @@ void LocationBlock::parse_upload_pass(std::string value)
     }
 }
 
-void LocationBlock::parse_upload_store(std::string value)
+void LocationBlock::parse_upload_store(char * value)
 {
     if (Upload_store.empty())
     {
         struct stat sb;
 
-        if (stat(value.c_str(), &sb) == 0)
+        if (stat(value, &sb) == 0)
         {
             if (S_ISDIR(sb.st_mode))
             {
