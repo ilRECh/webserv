@@ -5,12 +5,12 @@
 RequestResponse::RequestResponse(Server & srv)
     :   Server_originator(srv)
 {
-
+    OUT_DBG("Constructor");
 }
 
 RequestResponse::~RequestResponse()
 {
-
+    OUT_DBG("Destructor");
 }
 
 std::string RequestResponse::proceed(std::string & msg)

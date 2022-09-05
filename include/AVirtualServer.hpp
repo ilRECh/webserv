@@ -1,12 +1,13 @@
 #pragma once
 
+#include "ALocation.hpp"
+#include "logger.hpp"
 #include <string>
 #include <set>
 #include <map>
 
 #define DEFAULT_CLIENT_BODY_SIZE 1000000
 
-class ALocation;
 class Server;
 
 class AVirtualServer
@@ -29,23 +30,41 @@ protected:
         :   Host(host),
             Port(port),
             Client_max_body_size(DEFAULT_CLIENT_BODY_SIZE)
-    {}
+    {
+        OUT_DBG("Constructor");
+    }
 
     AVirtualServer()
         :   Host(),
             Port(),
             Client_max_body_size(DEFAULT_CLIENT_BODY_SIZE)
-    {}
+    {
+        OUT_DBG("Constructor");
+    }
 
     AVirtualServer(AVirtualServer & that)
         :   Host(that.Host),
             Port(that.Port),
             Client_max_body_size(that.Client_max_body_size),
             Server_names(that.Server_names),
-            Error_pages(that.Error_pages) {}
-    virtual ~AVirtualServer() {}
+            Error_pages(that.Error_pages)
+    {
+        OUT_DBG("Copy constructor");
+    }
 
 public:
+
+    virtual ~AVirtualServer()
+    {
+        std::map<std::string, ALocation *>::iterator location = Locations.begin();
+        while (location != Locations.end())
+        {
+            delete location->second;
+            ++location;
+        }
+
+        OUT_DBG("Destructor");
+    }
 
     std::string const & get_host() const
     {

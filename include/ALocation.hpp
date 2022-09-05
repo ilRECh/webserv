@@ -2,6 +2,7 @@
 
 #include <string>
 #include <set>
+#include "logger.hpp"
 
 class Location;
 
@@ -22,8 +23,11 @@ protected:
 
     friend Location;
 
-public:
-    ALocation() : Autoindex(-1) {} ;
+    ALocation() : Autoindex(-1)
+    {
+        OUT_DBG("Constructor");
+    }
+
     ALocation(ALocation & that)
         :   Autoindex(that.Autoindex),
             Return(that.Return),
@@ -32,7 +36,14 @@ public:
             Index(that.Index),
             FastCGI_path(that.FastCGI_path),
             Upload_pass(that.Upload_pass),
-            Upload_store(that.Upload_store) {}
+            Upload_store(that.Upload_store)
+    {
+        OUT_DBG("Constructor");
+    }
 
-    virtual ~ALocation() {} ;
+public:
+    virtual ~ALocation()
+    {
+        OUT_DBG("Destructor");
+    }
 };

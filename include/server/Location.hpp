@@ -12,7 +12,7 @@ private:
     Location & operator=(Location & that);
 
 public:
-    Location(LocationBlock & block);
+    Location(ALocation & block);
     virtual ~Location();
 
 };

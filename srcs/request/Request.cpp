@@ -1,4 +1,5 @@
 #include "Request.hpp"
+#include "logger.hpp"
 #include <cstring>
 #include <algorithm>
 
@@ -31,6 +32,8 @@ Request::Request(std::string & msg)
     {
         parse_header(header);
     }
+
+    OUT_DBG("Constructor");
 }
 
 Request::~Request()
@@ -41,6 +44,8 @@ Request::~Request()
         delete *buf;
         ++buf;
     }
+
+    OUT_DBG("Destructor");
 }
 
 char * Request::get_parsing_buf_from(char const * buf)

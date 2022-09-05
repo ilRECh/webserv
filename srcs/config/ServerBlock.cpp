@@ -50,13 +50,6 @@ ServerBlock::ServerBlock(ConfigFile & config)
 
 ServerBlock::~ServerBlock()
 {
-    std::map<std::string, ALocation *>::iterator location = Locations.begin();
-    while (location != Locations.end())
-    {
-        delete location->second;
-        ++location;
-    }
-
     OUT_DBG("Destructor");
 }
 

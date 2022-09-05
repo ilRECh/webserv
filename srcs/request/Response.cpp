@@ -1,15 +1,16 @@
 #include "Response.hpp"
 #include "Request.hpp"
+#include "logger.hpp"
 
 Response::Response(Request & req)
     :   AHeaders(req)
 {
-
+    OUT_DBG("Constructor");
 }
 
 Response::~Response()
 {
-
+    OUT_DBG("Destructor");
 }
 
 std::string Response::execute()
