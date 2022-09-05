@@ -42,8 +42,10 @@ protected:
             Port(that.Port),
             Client_max_body_size(that.Client_max_body_size),
             Server_names(that.Server_names),
-            Error_pages(that.Error_pages)
-    {} ;
+            Error_pages(that.Error_pages) {}
+    virtual ~AVirtualServer() {}
+
+public:
 
     std::string const & get_host() const
     {
@@ -74,6 +76,4 @@ protected:
     {
         return Locations;
     }
-
-    virtual ~AVirtualServer() {} ;
 };

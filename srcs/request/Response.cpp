@@ -21,6 +21,8 @@ std::string Response::execute()
         throw 400;
     }
 
+    std::string result;
+
     if (Method == "GET")
     {
         if (Host.empty())
@@ -28,7 +30,7 @@ std::string Response::execute()
             throw 400;
         }
 
-        GET();
+        result = GET();
     }
     else if (Method == "POST")
     {
@@ -39,14 +41,37 @@ std::string Response::execute()
             throw 400;
         }
 
-        POST();
+        result = POST();
     }
     else if (Method == "DELETE")
     {
-        DELETE();
+        result = DELETE();
     }
     else
     {
         throw 400;
     }
+
+    return result;
+}
+
+std::string Response::GET()
+{
+    std::string result;
+
+    return result;
+}
+
+std::string Response::POST()
+{
+    std::string result;
+
+    return result;
+}
+
+std::string Response::DELETE()
+{
+    std::string result;
+
+    return result;
 }

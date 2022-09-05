@@ -21,11 +21,11 @@ std::string RequestResponse::proceed(std::string & msg)
         Request req(msg);
         Response resp(req);
 
-        result = resp->execute();
+        result = resp.execute();
     } catch (int code) {
-        result = examine_code(code);
+        // result = examine_code(code);
     } catch (...) {
-        result = examine_code(404);
+        // result = examine_code(404);
     }
 
     return result;

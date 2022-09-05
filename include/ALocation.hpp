@@ -22,8 +22,8 @@ protected:
 
     friend Location;
 
+public:
     ALocation() : Autoindex(-1) {} ;
-
     ALocation(ALocation & that)
         :   Autoindex(that.Autoindex),
             Return(that.Return),

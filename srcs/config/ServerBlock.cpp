@@ -176,7 +176,7 @@ void ServerBlock::parse_location(char * value)
                 block->parse_block();
                 block->validate();
 
-                if (Locations.find(URL) != Locations.end())
+                if (Locations.find(URL) == Locations.end())
                 {
                     Locations.insert(std::make_pair(URL, block));
                 }

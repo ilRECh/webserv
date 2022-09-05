@@ -13,12 +13,13 @@ private:
     std::list<std::string> Headers;
     std::string Body;
 
-    void GET();
-    void POST();
-    void DELETE();
+    std::string GET();
+    std::string POST();
+    std::string DELETE();
 
 public:
     Response(Request & req);
+    ~Response();
 
     std::string execute();
 };
