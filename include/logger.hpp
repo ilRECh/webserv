@@ -5,6 +5,8 @@
 #include <exception>
 #include <sstream>
 
+#define CRLF "\r\n"
+
 namespace ft {
 
 template <typename T>

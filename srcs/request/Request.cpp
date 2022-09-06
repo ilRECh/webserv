@@ -1,12 +1,13 @@
 #include "Request.hpp"
+#include "RequestResponse.hpp"
+#include "VirtualServer.hpp"
 #include "logger.hpp"
 #include <cstring>
 #include <algorithm>
 
-#define CRLF "\r\n"
-
-Request::Request(std::string & msg)
-    :   AHeaders()
+Request::Request(std::string & msg, RequestResponse & originator)
+    :   AHeaders(),
+        Originator(originator)
 {
     Parsers.reserve(3);
 
@@ -24,13 +25,23 @@ Request::Request(std::string & msg)
 
     char * msg_parse_buf = get_parsing_buf_from(msg.c_str());
 
-    evaluate_method_path_protocol(get_parsing_buf_from(std::strtok(msg_parse_buf, CRLF)));
+    std::vector<char *> headers;
+    headers.reserve(15);
 
-    char * header = NULL;
+    char * header = std::strtok(msg_parse_buf, CRLF);
 
-    while ((header = std::strtok(NULL, CRLF)) != NULL)
+    while (header != NULL)
     {
-        parse_header(header);
+        headers.push_back(get_parsing_buf_from(header));
+        header = std::strtok(NULL, CRLF);
+    }
+
+    std::vector<char *>::iterator header_iter = headers.begin();
+    evaluate_method_path_protocol(*header_iter);
+
+    while (++header_iter != headers.end())
+    {
+        parse_header(*header_iter);
     }
 
     OUT_DBG("Constructor");
@@ -57,18 +68,17 @@ char * Request::get_parsing_buf_from(char const * buf)
     return new_buf;
 }
 
-void Request::parse_header(std::string header)
+void Request::parse_header(char * header)
 {
     std::vector<HeaderCallback>::iterator parser = Parsers.begin();
     while (parser != Parsers.end())
     {
         size_t size = strlen(parser->header_name);
-        std::string header_name = header.substr(0, size);
+        std::string header_name(header, header + (size <= strlen(header) ? size : strlen(header)));
 
         if (parser->header_name == header_name)
         {
-            size_t start_from = size;
-            parser->callback(get_parsing_buf_from(header.substr(start_from, header.length()).c_str()));
+            parser->callback(header);
             break;
         }
 
@@ -96,9 +106,23 @@ void Request::evaluate_method_path_protocol(char * method_path_protocol)
 
 void Request::parse_host(char * host)
 {
-    if (Host.empty())
+    if (Server_handler == NULL)
     {
         Host = host;
+
+        Server_handler = *(Originator.Virtual_servers.begin());
+
+        std::vector<VirtualServer *>::const_iterator vserver = Originator.Virtual_servers.begin();
+        while (vserver != Originator.Virtual_servers.end())
+        {
+            if ((*vserver)->get_server_names().find(host) != (*vserver)->get_server_names().end())
+            {
+                Server_handler = *vserver;
+                break;
+            }
+
+            ++vserver;
+        }
     }
 }
 

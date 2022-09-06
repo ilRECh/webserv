@@ -23,8 +23,6 @@ protected:
     std::map<int, std::string> Error_pages;
     std::map<std::string, ALocation *> Locations;
 
-    friend Server;
-
     AVirtualServer(std::string host,
                    std::string port)
         :   Host(host),

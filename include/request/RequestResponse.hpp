@@ -3,10 +3,10 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "logger.hpp"
+#include <vector>
 #include <string>
 
-class Server;
-class Head;
+class VirtualServer;
 
 class RequestResponse
 {
@@ -15,12 +15,14 @@ private:
     RequestResponse(RequestResponse & that);
     RequestResponse & operator=(RequestResponse & that);
 
-    Server & Server_originator;
+    std::vector<VirtualServer *> const & Virtual_servers;
 
-    // Response examine_code(int code);
+    std::string examine_code(int code);
+
+    friend class Request;
 
 public:
-    RequestResponse(Server & srv);
+    RequestResponse(std::vector<VirtualServer *> const & virtual_servers);
     ~RequestResponse();
 
     std::string proceed(std::string & msg);

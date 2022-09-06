@@ -1,7 +1,5 @@
 #include "Connection.hpp"
 
-#define CRLF "\r\n"
-
 static void replace_all(std::string &str, const char * what, const char * with)
 {
     std::size_t pos = 0;

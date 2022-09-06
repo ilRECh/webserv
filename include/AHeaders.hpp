@@ -5,6 +5,7 @@
 
 class Request;
 class Response;
+class VirtualServer;
 
 class AHeaders
 {
@@ -12,7 +13,7 @@ private:
     AHeaders & operator=(AHeaders & that);
 
 protected:
-    AHeaders() : Content_length(0)
+    AHeaders() : Server_handler(NULL), Content_length(0)
     {
         OUT_DBG("Constructor");
     }
@@ -21,7 +22,7 @@ protected:
         :   Method(that.Method),
             Path(that.Path),
             Protocol(that.Protocol),
-            Host(that.Host),
+            Server_handler(that.Server_handler),
             Content_type(that.Content_type),
             Content_length(that.Content_length)
     {
@@ -37,6 +38,7 @@ protected:
     std::string Path;
     std::string Protocol;
     std::string Host;
+    VirtualServer * Server_handler;
     std::string Content_type;
     size_t Content_length;
 

@@ -212,7 +212,7 @@ void Server::prepare_reply()
     {
         if ((*conn)->ready())
         {
-            RequestResponse handler(*this);
+            RequestResponse handler(Virtual_servers);
 
             (*conn)->reply_msg = handler.proceed((*conn)->accepted_msg);
             (*conn)->accepted_msg.clear();
