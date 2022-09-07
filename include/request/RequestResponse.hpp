@@ -7,6 +7,7 @@
 #include <string>
 
 class VirtualServer;
+class Connection;
 
 class RequestResponse
 {
@@ -25,5 +26,5 @@ public:
     RequestResponse(std::vector<VirtualServer *> const & virtual_servers);
     ~RequestResponse();
 
-    std::string proceed(std::string & msg);
+    std::string proceed(std::string & msg, Connection & conn);
 };

@@ -14,6 +14,7 @@ private:
     Connection(Connection& that);
     Connection& operator=(Connection& that);
 
+    bool Need_to_close;
     std::string accepted_msg;
     std::string reply_msg;
 
@@ -26,5 +27,6 @@ public:
     Connection(int const fd);
     ~Connection();
 
+    void need_to_close();
     bool ready();
 };

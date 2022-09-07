@@ -60,6 +60,7 @@ private:
     void prepare_reply();
     void reply();
     void scan_dead();
+    void delete_connection(Connection * conn);
 
 public:
     Server(std::string const host ,

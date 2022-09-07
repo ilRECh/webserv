@@ -21,7 +21,8 @@ std::string Connection::log_out_with_symbols(char const * to_print)
 }
 
 Connection::Connection(const int _fd)
-    :   fd(_fd)
+    :   Need_to_close(false),
+        fd(_fd)
 {
     OUT_DBG("Constructor");
 }
@@ -46,4 +47,9 @@ bool Connection::ready()
     }
 
     return false;
+}
+
+void Connection::need_to_close()
+{
+    Need_to_close = true;
 }

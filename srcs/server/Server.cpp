@@ -166,16 +166,16 @@ void Server::scan_dead()
 
             if (received == 0)
             {
-                FD_CLR((*conn)->fd, &Write_set);
-                FD_CLR((*conn)->fd, &Read_set);
-                FD_CLR((*conn)->fd, &Fd_set);
-                delete (*conn);
                 OUT("Connection closed: " << (*conn)->fd);
+                delete_connection(*conn);
                 conn = Accepted_conns.erase(conn);
             }
         }
 
-        ++conn;
+        if (conn != Accepted_conns.end())
+        {
+            ++conn;
+        }
     }
 }
 
@@ -214,7 +214,7 @@ void Server::prepare_reply()
         {
             RequestResponse handler(Virtual_servers);
 
-            (*conn)->reply_msg = handler.proceed((*conn)->accepted_msg);
+            (*conn)->reply_msg = handler.proceed((*conn)->accepted_msg, **conn);
             (*conn)->accepted_msg.clear();
             OUT("Reply prepared for: " << (*conn)->fd);
         }
@@ -236,11 +236,29 @@ void Server::reply()
             if (not (*conn)->reply_msg.empty())
             {
                 send((*conn)->fd, (*conn)->reply_msg.c_str(), (*conn)->reply_msg.length(), 0);
+                OUT_DBG(Connection::log_out_with_symbols((*conn)->reply_msg.c_str()));
                 (*conn)->reply_msg.clear();
                 OUT("Reply sent to: " << (*conn)->fd);
+
+                if ((*conn)->Need_to_close)
+                {
+                    delete_connection(*conn);
+                    conn = Accepted_conns.erase(conn);
+                }
             }
         }
 
-        ++conn;
+        if (conn != Accepted_conns.end())
+        {
+            ++conn;
+        }
     }
+}
+
+void Server::delete_connection(Connection * conn)
+{
+    FD_CLR(conn->fd, &Fd_set);
+    FD_CLR(conn->fd, &Read_set);
+    FD_CLR(conn->fd, &Write_set);
+    delete conn;
 }
