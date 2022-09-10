@@ -218,7 +218,7 @@ std::string Request::examine_err_code(int err_code)
     return result_headers + result_body;
 }
 
-std::string const & Request::get_path() const
+ParsedPath const & Request::get_path() const
 {
     return Path;
 }

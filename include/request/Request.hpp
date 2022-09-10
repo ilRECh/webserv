@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include "ParsedPath.hpp"
 
 class VirtualServer;
 
@@ -36,7 +37,7 @@ private:
     bool Need_to_close;
 
     std::string Method;
-    std::string Path;
+    ParsedPath Path;
     std::string Protocol;
     std::string Host;
     VirtualServer * Server_handler;
@@ -60,7 +61,7 @@ public:
             std::vector<VirtualServer *> const & virtual_servers);
     ~Request();
 
-    std::string const & get_path() const;
+    ParsedPath const & get_path() const;
     std::string const & get_content_type() const;
     size_t get_content_length() const;
 

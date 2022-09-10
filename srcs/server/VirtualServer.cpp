@@ -3,6 +3,7 @@
 #include "Location.hpp"
 #include "LocationBlock.hpp"
 #include "Request.hpp"
+#include "ParsedPath.hpp"
 
 VirtualServer::VirtualServer(ServerBlock & block)
     :   AVirtualServer(block)
@@ -30,14 +31,13 @@ VirtualServer::~VirtualServer()
 
 std::string VirtualServer::GET(Request & req)
 {
-    std::string path_to_get = req.get_path();
+    std::string result;
 
-    std::map<std::string, ALocation *>::iterator location = Locations.find(path_to_get);
-
-    if (location != Locations.end())
+    if (req.get_path().get_file().empty())
     {
 
     }
+
     return std::string();
 }
 
