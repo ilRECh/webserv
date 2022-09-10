@@ -33,9 +33,21 @@ std::string VirtualServer::GET(Request & req)
 {
     std::string result;
 
-    if (req.get_path().get_file().empty())
+    std::map<std::string, ALocation *>::iterator location;
+    std::vector<std::string>::const_reverse_iterator last = req.get_path().get_splitted_by_slash().rbegin();
+    std::vector<std::string>::const_reverse_iterator first = req.get_path().get_splitted_by_slash().rend();
+    std::string path;
+
+    while (last != first)
     {
-        std::string full_path = req.
+        path = req.get_path().reassemble_until(last);
+        location = Locations.find(path);
+        // if file or folder here
+        // file -> try to open
+        // folder -> index? -> Yes -> try to open; No -> autoindex?; Yes -> try to open index.html; No -> 403
+        if (location)        
+
+        ++last;
     }
 
     return std::string();

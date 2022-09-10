@@ -9,8 +9,6 @@ private:
     ParsedPath & operator=(ParsedPath & that);
     ParsedPath(ParsedPath & that);
 
-    std::string Folder;
-    std::string File;
     std::vector<std::string> Splitted_by_slash;
 
 public:
@@ -18,7 +16,6 @@ public:
     ParsedPath & operator=(char * ParsedPath);
     ~ParsedPath();
 
-    std::string const & get_folder() const;
-    std::string const & get_file() const;
     std::vector<std::string> const & get_splitted_by_slash() const;
+    std::string reassemble_until(std::vector<std::string>::const_reverse_iterator last) const;
 };
