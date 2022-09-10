@@ -3,11 +3,10 @@
 #include <string>
 #include <list>
 #include <vector>
-#include "AHeaders.hpp"
 
-class RequestResponse;
+class VirtualServer;
 
-class Request : public AHeaders
+class Request
 {
 private:
     Request();
@@ -34,9 +33,19 @@ private:
         }
     };
 
+    bool Need_to_close;
+
+    std::string Method;
+    std::string Path;
+    std::string Protocol;
+    std::string Host;
+    VirtualServer * Server_handler;
+    std::string Content_type;
+    size_t Content_length;
+
     std::vector<HeaderCallback> Parsers;
     std::list<char *> Parsing_buffers;
-    RequestResponse & Originator;
+    std::vector<VirtualServer *> const & Virtual_servers;
 
     char * get_parsing_buf_from(char const * buf);
     void parse_header(char * header);
@@ -44,10 +53,16 @@ private:
     void parse_host(char * host);
     void parse_content_type(char * host);
     void parse_content_length(char * host);
+    std::string examine_err_code(int err_code);
 
 public:
-    Request(std::string & msg, RequestResponse & originator);
+    Request(std::string & msg,
+            std::vector<VirtualServer *> const & virtual_servers);
     ~Request();
 
-    void execute();
+    std::string const & get_path() const;
+    std::string const & get_content_type() const;
+    size_t get_content_length() const;
+
+    std::string execute();
 };

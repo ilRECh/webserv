@@ -1,13 +1,13 @@
 #include "Request.hpp"
-#include "RequestResponse.hpp"
 #include "VirtualServer.hpp"
 #include "logger.hpp"
 #include <cstring>
 #include <algorithm>
 
-Request::Request(std::string & msg, RequestResponse & originator)
-    :   AHeaders(),
-        Originator(originator)
+Request::Request(std::string & msg,
+                 std::vector<VirtualServer *> const & virtual_servers)
+    :   Need_to_close(false),
+        Virtual_servers(virtual_servers)
 {
     Parsers.reserve(3);
 
@@ -110,10 +110,10 @@ void Request::parse_host(char * host)
     {
         Host = host;
 
-        Server_handler = *(Originator.Virtual_servers.begin());
+        Server_handler = *Virtual_servers.begin();
 
-        std::vector<VirtualServer *>::const_iterator vserver = Originator.Virtual_servers.begin();
-        while (vserver != Originator.Virtual_servers.end())
+        std::vector<VirtualServer *>::const_iterator vserver = Virtual_servers.begin();
+        while (vserver != Virtual_servers.end())
         {
             if ((*vserver)->get_server_names().find(host) != (*vserver)->get_server_names().end())
             {
@@ -140,4 +140,95 @@ void Request::parse_content_length(char * content_length)
     {
         Content_length = std::atoi(content_length);
     }
+}
+
+std::string Request::execute()
+{
+    std::string result;
+
+    try {
+        if (Method == "GET")
+        {
+            result = Server_handler->GET(*this);
+        }
+        else if (Method == "POST")
+        {
+            result = Server_handler->POST(*this);
+        }
+        else if (Method == "DELETE")
+        {
+            result = Server_handler->DELETE(*this);
+        }
+        else
+        {
+            throw 400;
+        }
+    } catch (int err_code) {
+        result = examine_err_code(err_code);
+        Need_to_close = true;
+    }
+
+    return result;
+}
+
+// move to static Virtual server, rename to examine_err_code_default
+// create a function, which looks for the proper error page, and if it fails,
+// then the default function does its job
+std::string Request::examine_err_code(int err_code)
+{
+    std::string head_body;
+
+    switch (err_code)
+    {
+        case 301:
+            head_body += "301 Redirecting";
+            break;
+        case 400:
+            head_body += "400 Bad Request";
+            break;
+        case 403:
+            head_body += "403 Forbidden";
+            break; 
+        case 404:
+            head_body += "404 Not found";
+            break;
+        case 405:
+            head_body += "405 Method not allowed";
+            break;
+        default:
+            break;
+    }
+
+    std::string result_body(
+        "<html>" CRLF
+        "<head><title>" + head_body + "</title></head>" CRLF
+        "<body>" CRLF
+        "<center><h1>" + head_body + "</h1></center>" CRLF
+        "</body>" CRLF
+        "</html>" CRLF CRLF
+    );
+
+    std::string result_headers(
+        "HTTP/1.1 " + head_body + CRLF
+        "Connection: close" CRLF
+        "Content-Type: text/html; charset=utf-8" CRLF
+        "Content_length: " + ft::str(result_body.length()) + CRLF CRLF
+    );
+
+    return result_headers + result_body;
+}
+
+std::string const & Request::get_path() const
+{
+    return Path;
+}
+
+std::string const & Request::get_content_type() const
+{
+    return Content_type;
+}
+
+size_t Request::get_content_length() const
+{
+    return Content_length;
 }

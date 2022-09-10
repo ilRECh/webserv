@@ -2,6 +2,7 @@
 #include "ServerBlock.hpp"
 #include "Location.hpp"
 #include "LocationBlock.hpp"
+#include "Request.hpp"
 
 VirtualServer::VirtualServer(ServerBlock & block)
     :   AVirtualServer(block)
@@ -15,9 +16,39 @@ VirtualServer::VirtualServer(ServerBlock & block)
     
         ++location;
     }
+
+    if (Locations.find("/") == Locations.end())
+    {
+        Locations.insert(make_pair(std::string("/"), new Location()));
+    }
 }
 
 VirtualServer::~VirtualServer()
 {
     
+}
+
+std::string VirtualServer::GET(Request & req)
+{
+    std::string path_to_get = req.get_path();
+
+    std::map<std::string, ALocation *>::iterator location = Locations.find(path_to_get);
+
+    if (location != Locations.end())
+    {
+
+    }
+    return std::string();
+}
+
+std::string VirtualServer::POST(Request & req)
+{
+    (void)req;
+    return std::string();
+}
+
+std::string VirtualServer::DELETE(Request & req)
+{
+    (void)req;
+    return std::string();
 }

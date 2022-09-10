@@ -3,7 +3,6 @@
 #include "Location.hpp"
 #include "Server.hpp"
 #include "Connection.hpp"
-#include "RequestResponse.hpp"
 
 Server::Server(std::string const host ,
                std::string const port ,
@@ -212,9 +211,9 @@ void Server::prepare_reply()
     {
         if ((*conn)->ready())
         {
-            RequestResponse handler(Virtual_servers);
-
-            (*conn)->reply_msg = handler.proceed((*conn)->accepted_msg, **conn);
+            //Request request((*conn)->accepted_msg, Virtual_servers);  
+            //(*conn)->reply_msg = request.execute();
+            //(*conn)->is_need_to_close(request.is_need_to_close());
             (*conn)->accepted_msg.clear();
             OUT("Reply prepared for: " << (*conn)->fd);
         }

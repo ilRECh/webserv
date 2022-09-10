@@ -1,8 +1,10 @@
 #pragma once
 
+#include <string>
 #include "AVirtualServer.hpp"
 
 class ServerBlock;
+class Request;
 
 class VirtualServer : public AVirtualServer
 {
@@ -14,4 +16,8 @@ private:
 public:
     VirtualServer(ServerBlock & block);
     virtual ~VirtualServer();
+
+    std::string GET(Request & req);
+    std::string POST(Request & req);
+    std::string DELETE(Request & req);
 };
