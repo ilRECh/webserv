@@ -35,7 +35,7 @@ std::string VirtualServer::GET(Request & req)
 
     if (req.get_path().get_file().empty())
     {
-
+        std::string full_path = req.
     }
 
     return std::string();
