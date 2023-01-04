@@ -23,11 +23,11 @@ make
 ```
 #### Run:
 ```
-./webserv [port]
+./webserv [config_file]
 ```
 i.e.
 ```
-./webserv 8888
+./webserv config/default.conf
 ```
 #### Use:
 Open your browser and go for http://localhost:8888!
